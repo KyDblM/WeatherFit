@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">WeatherFit</string>
+
+    <string name="first_initial_setup_question">С какой темой вы хотите пользоваться приложением?</string>
+    <string name="first_initial_setup_option_light">Светлая</string>"
+    <string name="first_initial_setup_option_dark">Тёмная</string>
 </resources>

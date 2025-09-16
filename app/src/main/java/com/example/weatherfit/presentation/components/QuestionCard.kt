@@ -31,7 +31,7 @@ fun QuestionCard(
     Box(
         modifier = Modifier
             .padding(top = 50.dp)
-            .fillMaxWidth(0.8f)
+            .fillMaxWidth()
             .wrapContentHeight()
             .clip(shape = RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.surface),

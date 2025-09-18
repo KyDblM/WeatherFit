@@ -18,11 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.weatherfit.R
 import com.example.weatherfit.domain.model.Question
+import com.example.weatherfit.domain.model.QuestionType
 
 @Composable
 fun QuestionCard(
@@ -30,7 +30,7 @@ fun QuestionCard(
 ) {
     Box(
         modifier = Modifier
-            .padding(top = 50.dp)
+            .padding(top = 75.dp)
             .fillMaxWidth()
             .wrapContentHeight()
             .clip(shape = RoundedCornerShape(8.dp))
@@ -53,29 +53,28 @@ fun QuestionCard(
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(15.dp))
 
-            if (question.isItInputQuestion) {
-
-            }
-            else {
-                question.options.forEach { option ->
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        shape = RoundedCornerShape(8.dp),
-                        onClick = {
-                            /*TODO*/
+            when (question.questionType) {
+                QuestionType.CHOICE ->
+                    question.options.forEach { option ->
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(2.5.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            onClick = {
+                                // TODO save answer
+                            }
+                        ) {
+                            Text(
+                                text = option.displayText(),
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                textAlign = TextAlign.Center
+                            )
                         }
-                    ) {
-                        Text(
-                            text = option.displayText(),
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            textAlign = TextAlign.Center
-                        )
                     }
-                }
             }
         }
     }

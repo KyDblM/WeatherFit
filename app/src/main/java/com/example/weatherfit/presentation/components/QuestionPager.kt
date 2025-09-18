@@ -29,13 +29,15 @@ import com.example.weatherfit.R
 import com.example.weatherfit.domain.model.AnswerOption
 import com.example.weatherfit.domain.model.AppTheme
 import com.example.weatherfit.domain.model.Question
+import com.example.weatherfit.domain.model.QuestionType
 
 @Preview()
 @Composable
 fun QuestionPager(
-    questions: List<Question>? = emptyList(),
+    questions: List<Question>? = emptyList(), // TODO remove "? = emptyList()"
+    isItInitialSetup: Boolean = false // TODO create enum for this in viewmodel
 ) {
-    val pagerState = rememberPagerState { 2 } // TODO вернуть questions.size
+    val pagerState = rememberPagerState { 2 } // TODO replace "2" with "questions.size"
 
     Column(
         modifier = Modifier
@@ -44,19 +46,21 @@ fun QuestionPager(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            Modifier
-                .wrapContentHeight()
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
-        ) {
-            Image(
-                painter = painterResource(R.drawable.close_icon),
-                contentDescription = stringResource(R.string.close_button_description),
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
-            )
+        if (!isItInitialSetup) {
+            Row(
+                Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.close_icon),
+                    contentDescription = stringResource(R.string.close_button_description),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                )
+            }
         }
 
         HorizontalPager(
@@ -67,7 +71,7 @@ fun QuestionPager(
             state = pagerState,
             verticalAlignment = Alignment.Top
         ) { page ->
-            //val question = questions[page]
+            // TODO add "val question = questions[page]"
 
             QuestionCard(
                 Question(
@@ -75,8 +79,11 @@ fun QuestionPager(
                     options = listOf(
                         AnswerOption.Theme(AppTheme.LIGHT),
                         AnswerOption.Theme(AppTheme.DARK)
-                    )
+                    ),
+                    questionType = QuestionType.CHOICE
                 ),
+
+                // TODO replace Question object with "question"
             )
         }
 
@@ -88,10 +95,12 @@ fun QuestionPager(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            repeat(pagerState.pageCount) { iteration ->
-                val color =
-                    if (pagerState.currentPage == iteration) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.secondary
+            repeat(pagerState.pageCount) { currentPage ->
+                val color = if (pagerState.currentPage == currentPage)
+                    MaterialTheme.colorScheme.primary
+                else
+                    MaterialTheme.colorScheme.secondary
+
                 Box(
                     modifier = Modifier
                         .padding(3.dp)

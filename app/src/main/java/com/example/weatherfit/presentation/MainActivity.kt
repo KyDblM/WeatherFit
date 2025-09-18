@@ -4,7 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.example.weatherfit.presentation.components.RegistrationScreen
+import androidx.lifecycle.ViewModelProvider
+import com.example.weatherfit.presentation.screens.RegistrationScreen
+
+lateinit var viewModel: MainViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,5 +16,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             RegistrationScreen()
         }
+
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
     }
 }

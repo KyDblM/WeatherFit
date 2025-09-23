@@ -1,5 +1,8 @@
 package com.example.weatherfit.presentation.components
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +19,10 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,21 +30,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.weatherfit.R
 import com.example.weatherfit.domain.model.AnswerOption
-import com.example.weatherfit.domain.model.AppTheme
 import com.example.weatherfit.domain.model.Question
-import com.example.weatherfit.domain.model.QuestionType
+import com.example.weatherfit.domain.model.QuestionSubject
+import kotlinx.coroutines.launch
+import kotlin.math.absoluteValue
 
-@Preview()
 @Composable
 fun QuestionPager(
-    questions: List<Question>? = emptyList(), // TODO remove "? = emptyList()"
-    isItInitialSetup: Boolean = false // TODO create enum for this in viewmodel
+    questions: List<Question>,
+    isItInitialSetup: Boolean = false, // TODO create enum for this in viewmodel
+    onFinished: (Map<QuestionSubject, AnswerOption>) -> Unit
 ) {
-    val pagerState = rememberPagerState { 2 } // TODO replace "2" with "questions.size"
+    val pagerState = rememberPagerState { questions.size }
+    val coroutineScope = rememberCoroutineScope()
+    val answers = remember { mutableStateMapOf<QuestionSubject, AnswerOption>() }
 
     Column(
         modifier = Modifier
@@ -66,25 +75,39 @@ fun QuestionPager(
         HorizontalPager(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth(0.8f)
+                .fillMaxWidth()
                 .background(Color.Transparent),
             state = pagerState,
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.Top,
+            userScrollEnabled = false,
         ) { page ->
-            // TODO add "val question = questions[page]"
 
-            QuestionCard(
-                Question(
-                    text = stringResource(R.string.first_initial_setup_question),
-                    options = listOf(
-                        AnswerOption.Theme(AppTheme.LIGHT),
-                        AnswerOption.Theme(AppTheme.DARK)
-                    ),
-                    questionType = QuestionType.CHOICE
-                ),
-
-                // TODO replace Question object with "question"
-            )
+            Box (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                QuestionCard(
+                    question = questions[page],
+                    onAnswerSelected = { answer ->
+                        answers[questions[page].subject] = answer
+                        if (page == questions.lastIndex) {
+                            onFinished(answers)
+                        } else {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(
+                                    page + 1,
+                                    animationSpec = tween(
+                                        durationMillis = 500,
+                                        easing = FastOutSlowInEasing
+                                    )
+                                )
+                            }
+                        }
+                    }
+                )
+            }
         }
 
         Row(
@@ -96,10 +119,13 @@ fun QuestionPager(
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(pagerState.pageCount) { currentPage ->
-                val color = if (pagerState.currentPage == currentPage)
-                    MaterialTheme.colorScheme.primary
-                else
-                    MaterialTheme.colorScheme.secondary
+                val targetColor = if (pagerState.currentPage == currentPage) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.secondary
+
+                val color by animateColorAsState(
+                    targetValue = targetColor,
+                    label = "indicatorColor"
+                )
 
                 Box(
                     modifier = Modifier

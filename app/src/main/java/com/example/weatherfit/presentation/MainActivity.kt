@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.ViewModelProvider
+import com.example.weatherfit.domain.repository.QuestionsRepository
 import com.example.weatherfit.presentation.screens.RegistrationScreen
 
 lateinit var viewModel: MainViewModel
@@ -14,7 +15,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            RegistrationScreen()
+            RegistrationScreen(QuestionsRepository().registrationQuestions)
         }
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)

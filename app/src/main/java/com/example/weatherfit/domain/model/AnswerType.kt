@@ -1,6 +1,6 @@
 package com.example.weatherfit.domain.model
 
-enum class QuestionType {
+enum class AnswerType {
     CHOICE,
-    // SLIDER
+    SLIDER
 }

@@ -6,15 +6,17 @@ import com.example.weatherfit.domain.model.Question
 import com.example.weatherfit.presentation.components.QuestionPager
 import com.example.weatherfit.presentation.theme.WeatherFitTheme
 
-@Preview()
 @Composable
 fun RegistrationScreen(
-    questions: List<Question>? = emptyList()
+    questions: List<Question>,
 ) {
     WeatherFitTheme (darkTheme = false) {
         QuestionPager(
             questions = questions,
-            isItInitialSetup = true
+            isItInitialSetup = true,
+            onFinished = {
+
+            }
         )
     }
 }

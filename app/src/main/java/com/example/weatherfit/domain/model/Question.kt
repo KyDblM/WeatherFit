@@ -1,7 +1,10 @@
 package com.example.weatherfit.domain.model
 
+import androidx.annotation.StringRes
+
 data class Question(
-    val text: String,
+    val subject: QuestionSubject,
+    @StringRes val text: Int,
     val options: List<AnswerOption> = emptyList(),
-    val questionType: QuestionType,
+    val answerType: AnswerType,
 )

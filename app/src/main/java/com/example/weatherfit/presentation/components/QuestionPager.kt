@@ -41,7 +41,7 @@ import kotlin.math.absoluteValue
 @Composable
 fun QuestionPager(
     questions: List<Question>,
-    isItInitialSetup: Boolean = false, // TODO create enum for this in viewmodel
+    isItInitialSetup: Boolean,
     onFinished: (Map<QuestionSubject, AnswerOption>) -> Unit
 ) {
     val pagerState = rememberPagerState { questions.size }

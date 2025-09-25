@@ -33,7 +33,7 @@ sealed class AnswerOption {
     data class Activity(val value: ActivityMode, @StringRes val label: Int = value.label) : AnswerOption()
 
     @Composable
-    fun displayText(): String = when(this) {
+    fun getValue(): String = when(this) {
         is Theme -> stringResource(label)
         is Gender -> stringResource(label)
         is Hours -> value.toString()

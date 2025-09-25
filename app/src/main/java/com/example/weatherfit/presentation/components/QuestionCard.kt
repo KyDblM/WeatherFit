@@ -87,7 +87,7 @@ fun QuestionCard(
                             }
                         ) {
                             Text(
-                                text = option.displayText(),
+                                text = option.getValue(),
                                 style = MaterialTheme.typography.titleLarge,
                                 color = MaterialTheme.colorScheme.onPrimary,
                                 textAlign = TextAlign.Center

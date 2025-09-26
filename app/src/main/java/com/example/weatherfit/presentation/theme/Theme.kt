@@ -38,9 +38,11 @@ private val DarkColorScheme = darkColorScheme(
 
 @Composable
 fun WeatherFitTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    isDarkTheme: Boolean?,
     content: @Composable () -> Unit
 ) {
+    val darkTheme = isDarkTheme ?: isSystemInDarkTheme()
+
     MaterialTheme(
         colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
         typography = Typography,

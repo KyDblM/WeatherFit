@@ -10,7 +10,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
+private val LightColorScheme = lightColorScheme(
     primary = Blue500,
     secondary = Blue200,
     tertiary = Green500,
@@ -23,13 +23,13 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = Black900,
 )
 
-private val LightColorScheme = lightColorScheme(
+private val DarkColorScheme = darkColorScheme(
     primary = Blue500,
     secondary = Blue200,
     tertiary = Green500,
     background = Gray900,
     surface = Gray700,
-    onPrimary = Black900,
+    onPrimary = White50,
     onSecondary = Black900,
     onTertiary = Black900,
     onBackground = Black900,
@@ -38,9 +38,11 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun WeatherFitTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    isDarkTheme: Boolean?,
     content: @Composable () -> Unit
 ) {
+    val darkTheme = isDarkTheme ?: isSystemInDarkTheme()
+
     MaterialTheme(
         colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
         typography = Typography,

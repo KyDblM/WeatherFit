@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">WeatherFit</string>
+
+    <string name="first_initial_setup_question">Какую тему приложения вы хотите использовать?</string>
+    <string name="first_initial_setup_option_light">Светлая</string>
+    <string name="first_initial_setup_option_dark">Тёмная</string>
+
+    <string name="second_initial_setup_question">Какой пол манекена вы предпочитаете видеть в приложении?</string>
+    <string name="second_initial_setup_option_female">Женский</string>
+    <string name="second_initial_setup_option_male">Мужской</string>
+
+    <string name="hours_outside_question">Сколько часов вы планируете провести вне дома?</string>
+    
+    <string name="location_type_question">Где вы будете проводить время?</string>
+    <string name="location_type_option_indoor">В помещении</string>
+    <string name="location_type_option_outdoor">На улице</string>
+    
+    <string name="activity_mode_question">Какой у вас план активности?</string>
+    <string name="activity_mode_option_regular">Обычная активность</string>
+    <string name="activity_mode_option_sport">Спорт</string>
+
+    <string name="close_button_description">Кнопка выхода</string>
 </resources>

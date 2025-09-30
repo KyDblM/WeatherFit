@@ -19,5 +19,12 @@
     <string name="activity_mode_option_regular">Обычная активность</string>
     <string name="activity_mode_option_sport">Спорт</string>
 
+    <string name="navigation_title_home">Главная</string>
+    <string name="navigation_title_history">История</string>
+    <string name="navigation_title_profile">Профиль</string>
+
     <string name="close_button_description">Кнопка выхода</string>
+    <string name="arrow_image_description">Стрелка</string>
+    <string name="mannequin_image_description">Манекен</string>
+    <string name="navigation_image_description">Иконка навигации</string>
 </resources>

@@ -1,25 +1,34 @@
 package com.example.weatherfit.presentation.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
@@ -29,6 +38,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.weatherfit.R
+import com.example.weatherfit.presentation.modifiers.customShadow
 import com.example.weatherfit.presentation.navigation.NavigationItem
 import com.example.weatherfit.presentation.theme.LightColorScheme
 
@@ -41,75 +51,131 @@ fun CustomNavigationBar(
 ) {
     val navBarColor: Color
     val shadowColor: Color
-    val selectedNavigationColor: Color
-    val unselectedNavigationColor: Color
 
     if (MaterialTheme.colorScheme == LightColorScheme) {
         navBarColor = MaterialTheme.colorScheme.secondary
         shadowColor = MaterialTheme.colorScheme.secondary
-        selectedNavigationColor = MaterialTheme.colorScheme.onPrimary
-        unselectedNavigationColor = MaterialTheme.colorScheme.primary
     }
     else {
         navBarColor = MaterialTheme.colorScheme.surface
         shadowColor = MaterialTheme.colorScheme.background
-        selectedNavigationColor = MaterialTheme.colorScheme.onSurface
-        unselectedNavigationColor = MaterialTheme.colorScheme.background
     }
 
     if (navigationItems.any { it.route == currentScreen.value }) {
-        NavigationBar(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(
-                    top = 20.dp,
-                    start = 20.dp,
-                    end = 20.dp,
-                    bottom = navigationBarPadding + 20.dp
+                    top = 10.dp,
+                    start = 10.dp,
+                    end = 10.dp,
+                    bottom = navigationBarPadding + 10.dp
                 )
-                .shadow(
-                    elevation = 3.dp,
-                    shape = RoundedCornerShape(16.dp),
-                    spotColor = shadowColor
+                .customShadow(
+                    shadowColor = shadowColor,
+                    alpha = 0.4f,
+                    shape = RoundedCornerShape(20.dp)
+                )
+                .background(
+                    color = navBarColor,
+                    shape = RoundedCornerShape(20.dp)
                 ),
-            containerColor = navBarColor,
-            windowInsets = WindowInsets(0, 0, 0, 0)
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             navigationItems.forEach { navigationItem ->
-                NavigationBarItem(
-                    selected = currentScreen.value == navigationItem.route,
-                    alwaysShowLabel = false,
-                    label = {
-                        Text(
-                            text = navigationItem.title,
-                            style = MaterialTheme.typography.titleLarge,
-                            color = if (currentScreen.value == navigationItem.route)
-                                selectedNavigationColor
-                            else
-                                unselectedNavigationColor,
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    icon = {
-                        Image(
-                            painter = painterResource(navigationItem.image),
-                            contentDescription = stringResource(R.string.navigation_image_description),
-                            colorFilter = ColorFilter.tint(
-                                if (currentScreen.value == navigationItem.route)
-                                    selectedNavigationColor
-                                else
-                                    unselectedNavigationColor
-                            )
-                        )
-                    },
-                    onClick = {
-                        currentScreen.value = navigationItem.route
-                        navController.navigate(navigationItem.route)
-                    },
-                    colors = NavigationBarItemDefaults.colors(indicatorColor = Color.Transparent),
+                CustomNavigationBarItem(
+                    currentScreen = currentScreen,
+                    navigationItem = navigationItem,
+                    navController = navController,
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun CustomNavigationBarItem(
+    currentScreen: MutableState<String>,
+    navigationItem: NavigationItem,
+    navController: NavController,
+) {
+    val selected = currentScreen.value == navigationItem.route
+    val selectedNavigationColor: Color
+    val unselectedNavigationColor: Color
+    val animationDuration = 50
+
+    if (MaterialTheme.colorScheme == LightColorScheme) {
+        selectedNavigationColor = MaterialTheme.colorScheme.onPrimary
+        unselectedNavigationColor = MaterialTheme.colorScheme.primary
+    }
+    else {
+        selectedNavigationColor = MaterialTheme.colorScheme.onSurface
+        unselectedNavigationColor = MaterialTheme.colorScheme.background
+    }
+
+    val iconColor = animateColorAsState(
+        targetValue = if (selected) selectedNavigationColor else unselectedNavigationColor,
+        animationSpec = tween(
+            durationMillis = animationDuration,
+            easing = LinearEasing
+        ),
+        label = "iconColorAnimation"
+    )
+
+    val iconOffset = animateDpAsState(
+        targetValue = if (!selected) 0.dp else (-5).dp,
+        animationSpec = tween(
+            durationMillis = animationDuration,
+            easing = LinearEasing
+        ),
+        label = "iconOffsetAnimation"
+    )
+
+    Box(
+        modifier = Modifier
+            .wrapContentHeight()
+            .background(Color.Transparent)
+            .padding(vertical = 25.dp)
+            .clickable(
+                onClick = {
+                    if (!selected) {
+                        currentScreen.value = navigationItem.route
+                        navController.navigate(navigationItem.route)
+                    }
+                },
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            )
+            .offset(y = iconOffset.value)
+    ) {
+        Column (
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(navigationItem.image),
+                contentDescription = stringResource(R.string.navigation_image_description),
+                colorFilter = ColorFilter.tint(iconColor.value)
+            )
+
+            /*
+            AnimatedVisibility(
+                visible = selected,
+                enter = fadeIn(animationSpec = tween(animationDuration)) +
+                        slideInVertically(animationSpec = tween(animationDuration)),
+                exit = fadeOut(animationSpec = tween(animationDuration)) +
+                       slideOutVertically(animationSpec = tween(animationDuration))
+            ) {
+                Text(
+                    text = navigationItem.title,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = iconColor.value,
+                    textAlign = TextAlign.Center
+                )
+            }
+            */
         }
     }
 }

@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -67,9 +68,15 @@ class MainActivity : ComponentActivity() {
                 ) { paddingValues ->
                     NavHost(
                         navController = navController,
-                        startDestination = viewModel.currentScreen.value
+                        startDestination = viewModel.currentScreen.value,
                     ) {
-                        composable(NavigationRoutes.Registration.route) {
+                        composable(
+                            route = NavigationRoutes.Registration.route,
+                            enterTransition = { EnterTransition.None },
+                            exitTransition = { ExitTransition.None },
+                            popEnterTransition = { EnterTransition.None },
+                            popExitTransition = { ExitTransition.None }
+                        ) {
                             RegistrationScreen(
                                 QuestionsRepository().registrationQuestions,
                                 onFinished = { answers ->
@@ -81,15 +88,27 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        composable(NavigationRoutes.Home.route) {
-                            HomeScreen(paddingValues)
+                        composable(
+                            route = NavigationRoutes.Home.route,
+                            enterTransition = { EnterTransition.None },
+                            exitTransition = { ExitTransition.None },
+                            popEnterTransition = { EnterTransition.None },
+                            popExitTransition = { ExitTransition.None }
+                        ) {
+                            HomeScreen(paddingValues = paddingValues)
                         }
 
-                        composable(NavigationRoutes.History.route) {
+                        composable(
+                            route = NavigationRoutes.History.route,
+                            enterTransition = { EnterTransition.None },
+                            exitTransition = { ExitTransition.None },
+                            popEnterTransition = { EnterTransition.None },
+                            popExitTransition = { ExitTransition.None }
+                        ) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .background(MaterialTheme.colorScheme.surface),
+                                    .background(MaterialTheme.colorScheme.background),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Top,
                             ) {
@@ -99,7 +118,13 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
-                        composable(NavigationRoutes.Profile.route) {
+                        composable(
+                            route = NavigationRoutes.Profile.route,
+                            enterTransition = { EnterTransition.None },
+                            exitTransition = { ExitTransition.None },
+                            popEnterTransition = { EnterTransition.None },
+                            popExitTransition = { ExitTransition.None }
+                        ) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()

@@ -17,8 +17,8 @@ fun HomeScreen(
     Column(
         modifier = Modifier.padding(horizontal = 20.dp)
     ) {
-        Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + 20.dp))
+        Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + 10.dp))
         MannequinCard()
-        Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding() + 20.dp))
+        Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding() + 10.dp))
     }
 }

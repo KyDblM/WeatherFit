@@ -23,8 +23,13 @@
     <string name="navigation_title_history">История</string>
     <string name="navigation_title_profile">Профиль</string>
 
+    <string name="debug_temperature">12°C</string>
+    <string name="debug_city">Москва</string>
+    <string name="debug_info">погода</string>
+
     <string name="close_button_description">Кнопка выхода</string>
     <string name="arrow_image_description">Стрелка</string>
     <string name="mannequin_image_description">Манекен</string>
     <string name="navigation_image_description">Иконка навигации</string>
+    <string name="information_block_image_description">Иконка блока информации</string>
 </resources>

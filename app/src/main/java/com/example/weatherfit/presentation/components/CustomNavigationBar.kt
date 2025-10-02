@@ -3,12 +3,9 @@ package com.example.weatherfit.presentation.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,7 +15,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -81,11 +77,12 @@ fun CustomNavigationBar(
                     color = navBarColor,
                     shape = RoundedCornerShape(20.dp)
                 ),
-            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             navigationItems.forEach { navigationItem ->
                 CustomNavigationBarItem(
+                    modifier = Modifier.weight(1f),
                     currentScreen = currentScreen,
                     navigationItem = navigationItem,
                     navController = navController,
@@ -97,6 +94,7 @@ fun CustomNavigationBar(
 
 @Composable
 fun CustomNavigationBarItem(
+    modifier: Modifier = Modifier,
     currentScreen: MutableState<String>,
     navigationItem: NavigationItem,
     navController: NavController,
@@ -104,7 +102,7 @@ fun CustomNavigationBarItem(
     val selected = currentScreen.value == navigationItem.route
     val selectedNavigationColor: Color
     val unselectedNavigationColor: Color
-    val animationDuration = 50
+    val animationDuration = 85
 
     if (MaterialTheme.colorScheme == LightColorScheme) {
         selectedNavigationColor = MaterialTheme.colorScheme.onPrimary
@@ -124,20 +122,11 @@ fun CustomNavigationBarItem(
         label = "iconColorAnimation"
     )
 
-    val iconOffset = animateDpAsState(
-        targetValue = if (!selected) 0.dp else (-5).dp,
-        animationSpec = tween(
-            durationMillis = animationDuration,
-            easing = LinearEasing
-        ),
-        label = "iconOffsetAnimation"
-    )
-
     Box(
-        modifier = Modifier
+        modifier = modifier
             .wrapContentHeight()
             .background(Color.Transparent)
-            .padding(vertical = 25.dp)
+            .padding(vertical = 15.dp)
             .clickable(
                 onClick = {
                     if (!selected) {
@@ -147,8 +136,8 @@ fun CustomNavigationBarItem(
                 },
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
-            )
-            .offset(y = iconOffset.value)
+            ),
+        contentAlignment = Alignment.Center
     ) {
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -160,13 +149,20 @@ fun CustomNavigationBarItem(
                 colorFilter = ColorFilter.tint(iconColor.value)
             )
 
-            /*
             AnimatedVisibility(
                 visible = selected,
-                enter = fadeIn(animationSpec = tween(animationDuration)) +
-                        slideInVertically(animationSpec = tween(animationDuration)),
-                exit = fadeOut(animationSpec = tween(animationDuration)) +
-                       slideOutVertically(animationSpec = tween(animationDuration))
+                enter = fadeIn(
+                    animationSpec = tween(
+                        durationMillis = animationDuration,
+                        easing = LinearEasing
+                    )
+                ),
+                exit = fadeOut(
+                    animationSpec = tween(
+                        durationMillis = animationDuration,
+                        easing = LinearEasing
+                    )
+                )
             ) {
                 Text(
                     text = navigationItem.title,
@@ -175,7 +171,6 @@ fun CustomNavigationBarItem(
                     textAlign = TextAlign.Center
                 )
             }
-            */
         }
     }
 }

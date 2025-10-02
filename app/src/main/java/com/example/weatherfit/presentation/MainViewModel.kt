@@ -35,6 +35,11 @@ class MainViewModel @Inject constructor(
 
     val navigationItems = listOf(
         NavigationItem(
+            title = context.getString(R.string.navigation_title_profile),
+            image = R.drawable.navigation_profile_icon,
+            route = NavigationRoutes.Profile.route
+        ),
+        NavigationItem(
             title = context.getString(R.string.navigation_title_home),
             image = R.drawable.navigation_home_icon,
             route = NavigationRoutes.Home.route
@@ -43,11 +48,6 @@ class MainViewModel @Inject constructor(
             title = context.getString(R.string.navigation_title_history),
             image = R.drawable.navigation_history_icon,
             route = NavigationRoutes.History.route
-        ),
-        NavigationItem(
-            title = context.getString(R.string.navigation_title_profile),
-            image = R.drawable.navigation_profile_icon,
-            route = NavigationRoutes.Profile.route
         )
     )
 

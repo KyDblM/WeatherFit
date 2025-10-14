@@ -51,7 +51,7 @@ class MainViewModel @Inject constructor(
         )
     )
 
-    val currentScreen: MutableState<String> = mutableStateOf(if (checkSettingsExist()) "home_screen" else "registration_screen")
+    val startScreen = if (checkSettingsExist()) "home_screen" else "registration_screen"
 
     fun saveSettings(settings: Map<QuestionSubject, AnswerOption>) {
         val userSettings = mapRegAnswersToUserSettings(settings, context)

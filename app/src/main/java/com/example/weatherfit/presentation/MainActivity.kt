@@ -1,14 +1,18 @@
 package com.example.weatherfit.presentation
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,13 +26,17 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.weatherfit.R
 import com.example.weatherfit.domain.repository.QuestionsRepository
@@ -45,40 +53,68 @@ class MainActivity : ComponentActivity() {
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = android.graphics.Color.TRANSPARENT
+        window.navigationBarColor = android.graphics.Color.TRANSPARENT
+        window.isNavigationBarContrastEnforced = false
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.auto(
+                android.graphics.Color.TRANSPARENT,
+                android.graphics.Color.TRANSPARENT
+            ),
+            navigationBarStyle = SystemBarStyle.auto(
+                android.graphics.Color.TRANSPARENT,
+                android.graphics.Color.TRANSPARENT
+            )
+        )
+
         setContent {
             WeatherFitTheme (viewModel.isDarkTheme.value) {
+                val view = LocalView.current
+                val window = (view.context as? Activity)?.window
+                val isDark = viewModel.isDarkTheme.value ?: isSystemInDarkTheme()
+                SideEffect {
+                    window?.let { window ->
+                        val controller = WindowCompat.getInsetsController(window, view)
+                        controller.isAppearanceLightStatusBars = !isDark
+                        controller.isAppearanceLightNavigationBars = !isDark
+                    }
+                }
+
                 val navController = rememberNavController()
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentScreen = navBackStackEntry?.destination?.route ?: viewModel.startScreen
 
                 Scaffold(
                     bottomBar = {
-                        CustomNavigationBar(
-                            navController = navController,
-                            navigationItems = viewModel.navigationItems,
-                            currentScreen = viewModel.currentScreen,
-                            navigationBarPadding = WindowInsets
-                                .navigationBars
-                                .only(WindowInsetsSides.Bottom)
-                                .asPaddingValues()
-                                .calculateBottomPadding()
-                        )
+                        if (viewModel.navigationItems.any {it.route == currentScreen}) {
+                            CustomNavigationBar(
+                                navController = navController,
+                                navigationItems = viewModel.navigationItems,
+                                currentScreen = currentScreen,
+                                navigationBarPadding = WindowInsets
+                                    .navigationBars
+                                    .only(WindowInsetsSides.Bottom)
+                                    .asPaddingValues()
+                                    .calculateBottomPadding()
+                            )
+                        }
                     }
                 ) { paddingValues ->
                     NavHost(
                         navController = navController,
-                        startDestination = viewModel.currentScreen.value,
+                        startDestination = viewModel.startScreen,
+                        enterTransition = { fadeIn(animationSpec = tween(delayMillis = 1, durationMillis = 1)) },
+                        exitTransition = { fadeOut(animationSpec = tween(durationMillis = 1)) },
+                        popEnterTransition = { fadeIn(animationSpec = tween(delayMillis = 1, durationMillis = 1)) },
+                        popExitTransition = { fadeOut(animationSpec = tween(durationMillis = 1)) }
                     ) {
-                        composable(
-                            route = NavigationRoutes.Registration.route,
-                            enterTransition = { EnterTransition.None },
-                            exitTransition = { ExitTransition.None },
-                            popEnterTransition = { EnterTransition.None },
-                            popExitTransition = { ExitTransition.None }
-                        ) {
+                        composable(route = NavigationRoutes.Registration.route) {
                             RegistrationScreen(
-                                QuestionsRepository().registrationQuestions,
+                                paddingValues = paddingValues,
+                                questions = QuestionsRepository().registrationQuestions,
                                 onFinished = { answers ->
                                     viewModel.saveSettings(answers)
                                     viewModel.updateAppTheme(viewModel.getAppTheme())
@@ -88,23 +124,11 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        composable(
-                            route = NavigationRoutes.Home.route,
-                            enterTransition = { EnterTransition.None },
-                            exitTransition = { ExitTransition.None },
-                            popEnterTransition = { EnterTransition.None },
-                            popExitTransition = { ExitTransition.None }
-                        ) {
+                        composable(route = NavigationRoutes.Home.route) {
                             HomeScreen(paddingValues = paddingValues)
                         }
 
-                        composable(
-                            route = NavigationRoutes.History.route,
-                            enterTransition = { EnterTransition.None },
-                            exitTransition = { ExitTransition.None },
-                            popEnterTransition = { EnterTransition.None },
-                            popExitTransition = { ExitTransition.None }
-                        ) {
+                        composable(route = NavigationRoutes.History.route) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -118,13 +142,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
-                        composable(
-                            route = NavigationRoutes.Profile.route,
-                            enterTransition = { EnterTransition.None },
-                            exitTransition = { ExitTransition.None },
-                            popEnterTransition = { EnterTransition.None },
-                            popExitTransition = { ExitTransition.None }
-                        ) {
+                        composable(route = NavigationRoutes.Profile.route) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()

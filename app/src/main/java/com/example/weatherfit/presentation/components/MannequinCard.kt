@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -23,17 +24,36 @@ import androidx.compose.ui.unit.dp
 import com.example.weatherfit.R
 
 private const val squareRatio = 1f
-private const val rectangularRatio = 0.7f
+private const val rectangularRatio = 0.65f
 private const val arrowRotateAngle = 45f
 
 @Composable
-fun MannequinCard (
+fun MannequinCard(
     modifier: Modifier = Modifier,
-    isItClickable: Boolean = true,
+    isItRectangular: Boolean = true
+) {
+    MannequinCardBase(modifier, false, isItRectangular, null)
+}
+
+@Composable
+fun MannequinCard(
+    modifier: Modifier = Modifier,
     isItRectangular: Boolean = true,
+    onClick: () -> Unit
+) {
+    MannequinCardBase(modifier, true, isItRectangular, onClick)
+}
+
+@Composable
+private fun MannequinCardBase(
+    modifier: Modifier,
+    isItClickable: Boolean,
+    isItRectangular: Boolean,
+    onClick: (() -> Unit)?
 ) {
     Box(
         modifier = modifier
+            .fillMaxSize()
             .aspectRatio(if (isItRectangular) rectangularRatio else squareRatio)
             .clip(shape = RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.surface)
@@ -41,11 +61,12 @@ fun MannequinCard (
             .then(
                 if (isItClickable) {
                     Modifier.clickable(
-                        onClick = { Unit },
+                        onClick = { onClick!!() },
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     )
-                } else {
+                }
+                else {
                     Modifier
                 }
             ),
@@ -53,7 +74,7 @@ fun MannequinCard (
     ) {
         Image(
             modifier = Modifier.matchParentSize(),
-            painter = painterResource(R.drawable.mannequin_example),
+            painter = painterResource(R.drawable.dev_mannequin_example),
             contentDescription = stringResource(R.string.mannequin_image_description),
             contentScale = ContentScale.Fit
         )
@@ -61,7 +82,7 @@ fun MannequinCard (
         if (isItClickable) {
             Icon(
                 modifier = Modifier.rotate(arrowRotateAngle),
-                painter = painterResource(R.drawable.arrow_icon),
+                painter = painterResource(R.drawable.interface_arrow_icon),
                 contentDescription = stringResource(R.string.arrow_image_description),
                 tint = MaterialTheme.colorScheme.onSurface
             )

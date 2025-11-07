@@ -17,16 +17,6 @@ private val Roboto = FontFamily(
 )
 
 val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = Comfortaa,
-        fontWeight = FontWeight.Medium,
-        fontSize = 32.sp,
-    ),
-    bodyMedium = TextStyle(
-        fontFamily = Comfortaa,
-        fontWeight = FontWeight.Medium,
-        fontSize = 28.sp,
-    ),
     titleLarge = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Normal,

@@ -28,16 +28,8 @@
     <string name="rain_title">Осадки</string>
     <string name="uv_index_title">УФ-индекс</string>
 
-
-    <string name="debug_temperature">12°</string>
-    <string name="debug_wind">3 м/с</string>
-    <string name="debug_humidity">52 %</string>
-    <string name="debug_uv_index">5</string>
-    <string name="debug_rain">15 %</string>
-    <string name="debug_city">Москва</string>
-    <string name="debug_title">Заголовок</string>
-
     <string name="close_button_description">Кнопка выхода</string>
+    <string name="weather_icon_description">Иконка погоды</string>
     <string name="arrow_image_description">Стрелка</string>
     <string name="mannequin_image_description">Манекен</string>
     <string name="navigation_image_description">Иконка навигации</string>

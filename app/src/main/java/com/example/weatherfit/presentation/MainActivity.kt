@@ -1,12 +1,20 @@
 package com.example.weatherfit.presentation
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
+import android.graphics.Color
+import android.location.LocationManager
+import android.net.ConnectivityManager
 import android.os.Bundle
+import android.os.Looper
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -26,6 +34,7 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -45,32 +54,65 @@ import com.example.weatherfit.presentation.navigation.NavigationRoutes
 import com.example.weatherfit.presentation.screens.HomeScreen
 import com.example.weatherfit.presentation.screens.RegistrationScreen
 import com.example.weatherfit.presentation.theme.WeatherFitTheme
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlin.time.Duration
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
+
+    private val locationPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+
+            if (fineGranted && isGpsAvailable()) {
+                getGpsLocation()
+            }
+            else {
+                if (isInternetAvailable()) {
+                    getIpLocation()
+                }
+            }
+        }
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.statusBarColor = android.graphics.Color.TRANSPARENT
-        window.navigationBarColor = android.graphics.Color.TRANSPARENT
+        window.statusBarColor = Color.TRANSPARENT
+        window.navigationBarColor = Color.TRANSPARENT
         window.isNavigationBarContrastEnforced = false
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.auto(
-                android.graphics.Color.TRANSPARENT,
-                android.graphics.Color.TRANSPARENT
+                Color.TRANSPARENT,
+                Color.TRANSPARENT
             ),
             navigationBarStyle = SystemBarStyle.auto(
-                android.graphics.Color.TRANSPARENT,
-                android.graphics.Color.TRANSPARENT
+                Color.TRANSPARENT,
+                Color.TRANSPARENT
             )
         )
 
+        locationPermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
+
         setContent {
+            LaunchedEffect(viewModel.location.value) {
+                viewModel.location.value.let {
+                    viewModel.getWeather(viewModel.location)
+                }
+            }
+
             WeatherFitTheme (viewModel.isDarkTheme.value) {
                 val view = LocalView.current
                 val window = (view.context as? Activity)?.window
@@ -119,13 +161,19 @@ class MainActivity : ComponentActivity() {
                                     viewModel.saveSettings(answers)
                                     viewModel.updateAppTheme(viewModel.getAppTheme())
 
-                                    navController.navigate("home_screen")
+                                    navController.navigate(NavigationRoutes.Home.route)
                                 }
                             )
                         }
 
                         composable(route = NavigationRoutes.Home.route) {
-                            HomeScreen(paddingValues = paddingValues)
+                            HomeScreen(
+                                paddingValues = paddingValues,
+                                weatherData = viewModel.weather,
+                                onMannequinClick = {
+                                    TODO("Navigation to the survey or suggestion editing windows")
+                                }
+                            )
                         }
 
                         composable(route = NavigationRoutes.History.route) {
@@ -158,6 +206,59 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    fun isInternetAvailable(): Boolean {
+        val connectivityManager =
+            this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
+    fun isGpsAvailable(): Boolean {
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getGpsLocation() {
+        val fusedClient = LocationServices.getFusedLocationProviderClient(this)
+
+        fusedClient.lastLocation
+            .addOnSuccessListener { location ->
+                if (location != null) {
+                    viewModel.location.value = location.latitude.toString() + "," + location.longitude.toString()
+                } else {
+                    val request = LocationRequest.Builder(
+                        Priority.PRIORITY_HIGH_ACCURACY,
+                        1000L
+                    )
+                        .setMaxUpdates(1)
+                        .build()
+
+                    val callback = object : LocationCallback() {
+                        override fun onLocationResult(result: LocationResult) {
+                            val location = result.lastLocation
+                            if (location != null) {
+                                viewModel.location.value = location.latitude.toString() + "," + location.longitude.toString()
+                            }
+                            fusedClient.removeLocationUpdates(this)
+                        }
+                    }
+
+                    fusedClient.requestLocationUpdates(
+                        request,
+                        callback,
+                        Looper.getMainLooper()
+                    )
+                }
+            }
+    }
+
+    private fun getIpLocation() {
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.getLocation()
         }
     }
 }

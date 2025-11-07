@@ -31,7 +31,7 @@ val DarkColorScheme = darkColorScheme(
     onTertiary = Black900,
     onBackground = Black900,
     onSurface = White50,
-    surfaceDim = Gray500
+    surfaceDim = Gray100
 )
 
 @Composable

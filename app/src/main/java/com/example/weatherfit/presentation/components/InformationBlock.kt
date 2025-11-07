@@ -28,6 +28,9 @@ import androidx.compose.ui.unit.dp
 import com.example.weatherfit.R
 import com.example.weatherfit.domain.model.InformationBlockType
 
+private const val squareRatio = 1f
+private const val rectangularRatio = 2.5f
+
 @Composable
 fun InformationBlock(
     modifier: Modifier = Modifier,
@@ -40,7 +43,12 @@ fun InformationBlock(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(1f)
+            .aspectRatio(
+                when(informationBlockType) {
+                    is InformationBlockType.OnlyImage -> squareRatio
+                    is InformationBlockType.TextWithTitleAndImage -> rectangularRatio
+                }
+            )
             .clip(shape = RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.surface)
             .padding(15.dp),
@@ -52,7 +60,7 @@ fun InformationBlock(
                     modifier = Modifier.fillMaxSize(),
                     painter = painterResource(informationBlockType.image),
                     contentDescription = stringResource(R.string.information_block_image_description),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Inside
                 )
             }
 
@@ -66,8 +74,8 @@ fun InformationBlock(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             modifier = Modifier
@@ -79,29 +87,21 @@ fun InformationBlock(
                         )
 
                         Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 2.dp),
+                            modifier = Modifier.padding(start = 2.dp),
                             text = stringResource(informationBlockType.title),
                             style = MaterialTheme.typography.titleSmall,
                             color = MaterialTheme.colorScheme.surfaceDim,
                             textAlign = TextAlign.Start
                         )
-                    }
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(5f),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
                         Text(
-                            modifier = Modifier.weight(3f),
-                            text = stringResource(informationBlockType.text),
-                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier
+                                .padding(start = 5.dp)
+                                .fillMaxWidth(),
+                            text = informationBlockType.text,
+                            style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.End
                         )
                     }
                 }

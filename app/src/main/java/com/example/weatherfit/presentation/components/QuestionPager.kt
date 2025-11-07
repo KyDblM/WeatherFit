@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -36,10 +35,10 @@ import com.example.weatherfit.domain.model.AnswerOption
 import com.example.weatherfit.domain.model.Question
 import com.example.weatherfit.domain.model.QuestionSubject
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
 
 @Composable
 fun QuestionPager(
+    modifier: Modifier = Modifier,
     questions: List<Question>,
     isItInitialSetup: Boolean,
     onFinished: (Map<QuestionSubject, AnswerOption>) -> Unit
@@ -49,8 +48,8 @@ fun QuestionPager(
     val answers = remember { mutableStateMapOf<QuestionSubject, AnswerOption>() }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = modifier
+            .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -65,7 +64,7 @@ fun QuestionPager(
                 horizontalArrangement = Arrangement.Start
             ) {
                 Image(
-                    painter = painterResource(R.drawable.close_icon),
+                    painter = painterResource(R.drawable.interface_close_icon),
                     contentDescription = stringResource(R.string.close_button_description),
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
                 )
@@ -114,7 +113,7 @@ fun QuestionPager(
             Modifier
                 .wrapContentHeight()
                 .fillMaxWidth()
-                .padding(vertical = 16.dp),
+                .padding(top = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {

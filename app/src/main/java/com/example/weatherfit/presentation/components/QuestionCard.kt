@@ -55,7 +55,7 @@ fun QuestionCard(
                 modifier = Modifier
                     .fillMaxWidth(),
                 text = stringResource(question.text),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center
             )
@@ -88,7 +88,7 @@ fun QuestionCard(
                         ) {
                             Text(
                                 text = option.getValue(),
-                                style = MaterialTheme.typography.titleLarge,
+                                style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onPrimary,
                                 textAlign = TextAlign.Center
                             )

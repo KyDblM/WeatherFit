@@ -19,5 +19,19 @@
     <string name="activity_mode_option_regular">Обычная активность</string>
     <string name="activity_mode_option_sport">Спорт</string>
 
+    <string name="navigation_title_home">Главная</string>
+    <string name="navigation_title_history">История</string>
+    <string name="navigation_title_profile">Профиль</string>
+
+    <string name="wind_title">Ветер</string>
+    <string name="humidity_title">Влажность</string>
+    <string name="rain_title">Осадки</string>
+    <string name="uv_index_title">УФ-индекс</string>
+
     <string name="close_button_description">Кнопка выхода</string>
+    <string name="weather_icon_description">Иконка погоды</string>
+    <string name="arrow_image_description">Стрелка</string>
+    <string name="mannequin_image_description">Манекен</string>
+    <string name="navigation_image_description">Иконка навигации</string>
+    <string name="information_block_image_description">Иконка блока информации</string>
 </resources>

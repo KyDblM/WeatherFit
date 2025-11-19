@@ -1,14 +1,6 @@
-package com.example.weatherfit.domain.repository
+package com.example.weatherfit.domain.util
 
 import com.example.weatherfit.R
-import com.example.weatherfit.domain.model.ActivityMode
-import com.example.weatherfit.domain.model.AnswerOption
-import com.example.weatherfit.domain.model.AnswerType
-import com.example.weatherfit.domain.model.AppTheme
-import com.example.weatherfit.domain.model.LocationType
-import com.example.weatherfit.domain.model.MannequinGender
-import com.example.weatherfit.domain.model.Question
-import com.example.weatherfit.domain.model.QuestionSubject
 
 class QuestionsRepository {
     val registrationQuestions: List<Question> = listOf(

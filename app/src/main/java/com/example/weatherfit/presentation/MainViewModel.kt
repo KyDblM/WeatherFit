@@ -5,16 +5,19 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.weatherfit.R
-import com.example.weatherfit.domain.model.AnswerOption
-import com.example.weatherfit.domain.model.AppTheme
-import com.example.weatherfit.domain.model.QuestionSubject
+import com.example.weatherfit.domain.util.AnswerOption
+import com.example.weatherfit.domain.util.AppTheme
+import com.example.weatherfit.domain.util.QuestionSubject
 import com.example.weatherfit.domain.model.WeatherData
-import com.example.weatherfit.domain.model.mapper.mapRegAnswersToUserSettings
+import com.example.weatherfit.domain.mapper.mapRegAnswersToUserSettings
 import com.example.weatherfit.domain.usecase.CheckSettingsExist
 import com.example.weatherfit.domain.usecase.GetAppTheme
+import com.example.weatherfit.domain.usecase.GetColdSensitivity
+import com.example.weatherfit.domain.usecase.GetFitSuggestion
 import com.example.weatherfit.domain.usecase.GetLocationFromIp
 import com.example.weatherfit.domain.usecase.GetWeather
 import com.example.weatherfit.domain.usecase.SaveSettings
+import com.example.weatherfit.domain.util.Mannequin
 import com.example.weatherfit.presentation.navigation.NavigationItem
 import com.example.weatherfit.presentation.navigation.NavigationRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,11 +34,16 @@ class MainViewModel @Inject constructor(
     private val checkSettingsExistUseCase: CheckSettingsExist,
     private val getAppThemeUseCase: GetAppTheme,
     private val getLocationFromIpUseCase: GetLocationFromIp,
-    private val getWeatherUseCase: GetWeather
+    private val getWeatherUseCase: GetWeather,
+    private val getFitSuggestion: GetFitSuggestion,
+    private val getColdSensitivity: GetColdSensitivity
 ) : ViewModel() {
 
     val location: MutableState<String> = mutableStateOf("")
     val weather: MutableState<WeatherData?> = mutableStateOf(null)
+    var suggestion: MutableState<Mannequin?> = mutableStateOf(null)
+
+    var surveyAnswers: Map<QuestionSubject, AnswerOption>? = null
 
     val isDarkTheme: MutableState<Boolean?> = mutableStateOf(
         value = when (getAppTheme()) {
@@ -94,9 +102,17 @@ class MainViewModel @Inject constructor(
 
     fun getWeather(location: MutableState<String>) {
         if (location.value != "") {
-            CoroutineScope(Dispatchers.IO).launch() {
+            CoroutineScope(Dispatchers.IO).launch {
                 weather.value = getWeatherUseCase.execute(location.value)
             }
         }
+    }
+
+    fun getSuggestion() {
+        suggestion.value = getFitSuggestion.execute(
+            weather = weather.value!!,
+            surveyAnswers = surveyAnswers!!,
+            userColdSensitivity = getColdSensitivity.execute()
+        )
     }
 }

@@ -1,6 +1,6 @@
 package com.example.weatherfit.domain.usecase
 
-import com.example.weatherfit.domain.model.AppTheme
+import com.example.weatherfit.domain.util.AppTheme
 import com.example.weatherfit.domain.repository.UserSettingsRepository
 
 class GetAppTheme (private val userSettingsRepository: UserSettingsRepository) {

@@ -35,8 +35,7 @@ fun Modifier.customShadow(
                 )
             }
 
-            val outline = shape.createOutline(size, layoutDirection, this)
-            val path = when (outline) {
+            val path = when (val outline = shape.createOutline(size, layoutDirection, this)) {
                 is Outline.Generic -> outline.path
                 is Outline.Rounded -> Path().apply { addRoundRect(outline.roundRect) }
                 is Outline.Rectangle -> Path().apply { addRect(outline.rect) }

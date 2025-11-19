@@ -26,8 +26,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.weatherfit.R
-import com.example.weatherfit.domain.model.InformationBlockType
+import com.example.weatherfit.presentation.util.InformationBlockType
 import com.example.weatherfit.domain.model.WeatherData
+import com.example.weatherfit.domain.util.Mannequin
 import com.example.weatherfit.presentation.components.InformationBlock
 import com.example.weatherfit.presentation.components.LoadingIndicator
 import com.example.weatherfit.presentation.components.MannequinCard
@@ -36,7 +37,9 @@ import com.example.weatherfit.presentation.components.MannequinCard
 fun HomeScreen(
     paddingValues: PaddingValues,
     weatherData: MutableState<WeatherData?>,
-    onMannequinClick: () -> Unit
+    suggestion: MutableState<Mannequin?>,
+    onMannequinClick: () -> Unit,
+    onRetryClick: () -> Unit
 ) {
 
     if (weatherData.value != null) {
@@ -50,7 +53,7 @@ fun HomeScreen(
                     overscrollEffect = null
                 )
         ) {
-            Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + 10.dp))
+            Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + 20.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -100,20 +103,22 @@ fun HomeScreen(
             ) {
                 MannequinCard(
                     modifier = Modifier.weight(3f),
+                    mannequin = suggestion,
                     onClick = onMannequinClick
                 )
 
-
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
-                    for(i in 1..4) {
-                        InformationBlock(
-                            informationBlockType = InformationBlockType.OnlyImage(
-                                image = R.drawable.dev_accessories_example
+                if (suggestion.value != null && !suggestion.value!!.baseAccessories.isEmpty()) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(20.dp)
+                    ) {
+                        for (i in 1..suggestion.value!!.baseAccessories.size) {
+                            InformationBlock(
+                                informationBlockType = InformationBlockType.OnlyImage(
+                                    image = suggestion.value!!.baseAccessories[i - 1].accessory.image
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
@@ -179,7 +184,7 @@ fun HomeScreen(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            LoadingIndicator()
+            LoadingIndicator(onRetry = onRetryClick)
         }
     }
 }

@@ -14,10 +14,11 @@ import com.example.weatherfit.domain.util.QuestionSubject
 import com.example.weatherfit.presentation.components.QuestionPager
 
 @Composable
-fun RegistrationScreen(
+fun SurveyScreen(
     paddingValues: PaddingValues,
     questions: List<Question>,
-    onFinished: (Map<QuestionSubject, AnswerOption>) -> Unit
+    onFinished: (Map<QuestionSubject, AnswerOption>) -> Unit,
+    onClose: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -28,11 +29,11 @@ fun RegistrationScreen(
         QuestionPager(
             modifier = Modifier.weight(1f),
             questions = questions,
-            isItInitialSetup = true,
+            isItInitialSetup = false,
             onFinished = { answers ->
                 onFinished(answers)
             },
-            onCloseClick = {}
+            onCloseClick = { onClose() }
         )
 
         Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding() + 10.dp))

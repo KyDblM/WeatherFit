@@ -1,4 +1,4 @@
-package com.example.weatherfit.domain.model
+package com.example.weatherfit.domain.util
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
@@ -39,5 +39,12 @@ sealed class AnswerOption {
         is Hours -> value.toString()
         is Location -> stringResource(label)
         is Activity -> stringResource(label)
+    }
+
+    fun getHours(): Int = when(this) {
+        is Hours -> value
+        else -> {
+            -1
+        }
     }
 }

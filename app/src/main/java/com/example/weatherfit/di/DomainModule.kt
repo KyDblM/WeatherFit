@@ -5,6 +5,8 @@ import com.example.weatherfit.domain.repository.UserSettingsRepository
 import com.example.weatherfit.domain.repository.WeatherDataRepository
 import com.example.weatherfit.domain.usecase.CheckSettingsExist
 import com.example.weatherfit.domain.usecase.GetAppTheme
+import com.example.weatherfit.domain.usecase.GetColdSensitivity
+import com.example.weatherfit.domain.usecase.GetFitSuggestion
 import com.example.weatherfit.domain.usecase.GetLocationFromIp
 import com.example.weatherfit.domain.usecase.GetWeather
 import com.example.weatherfit.domain.usecase.SaveSettings
@@ -33,6 +35,11 @@ class DomainModule {
     }
 
     @Provides
+    fun provideGetColdSensitivity(userSettingsRepository: UserSettingsRepository): GetColdSensitivity {
+        return GetColdSensitivity(userSettingsRepository)
+    }
+
+    @Provides
     fun provideGetLocationFromIpUseCase(locationRepository: LocationRepository): GetLocationFromIp {
         return GetLocationFromIp(locationRepository)
     }
@@ -40,5 +47,10 @@ class DomainModule {
     @Provides
     fun provideGetWeatherUseCase(weatherDataRepository: WeatherDataRepository): GetWeather {
         return GetWeather(weatherDataRepository)
+    }
+
+    @Provides
+    fun provideGetFitSuggestion(): GetFitSuggestion {
+        return GetFitSuggestion()
     }
 }

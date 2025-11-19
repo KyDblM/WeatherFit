@@ -1,8 +1,8 @@
-package com.example.weatherfit.domain.model.mapper
+package com.example.weatherfit.domain.mapper
 
 import android.content.Context
-import com.example.weatherfit.domain.model.AnswerOption
-import com.example.weatherfit.domain.model.QuestionSubject
+import com.example.weatherfit.domain.util.AnswerOption
+import com.example.weatherfit.domain.util.QuestionSubject
 import com.example.weatherfit.domain.model.UserSettings
 
 fun mapRegAnswersToUserSettings(answers: Map<QuestionSubject, AnswerOption>, context: Context) : UserSettings {

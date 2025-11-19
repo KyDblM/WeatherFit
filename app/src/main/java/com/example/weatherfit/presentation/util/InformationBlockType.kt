@@ -1,4 +1,4 @@
-package com.example.weatherfit.domain.model
+package com.example.weatherfit.presentation.util
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

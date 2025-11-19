@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -26,15 +27,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.weatherfit.domain.model.AnswerOption
-import com.example.weatherfit.domain.model.Question
-import com.example.weatherfit.domain.model.AnswerType
+import com.example.weatherfit.R
+import com.example.weatherfit.domain.util.AnswerOption
+import com.example.weatherfit.domain.util.Question
+import com.example.weatherfit.domain.util.AnswerType
+import kotlin.math.roundToInt
 
 @Composable
 fun QuestionCard(
     question: Question,
     onAnswerSelected: (AnswerOption) -> Unit
 ) {
+    var isClicked by remember { mutableStateOf(false) }
+
+    val buttonColor by animateColorAsState(
+        targetValue = if (isClicked) MaterialTheme.colorScheme.secondary
+        else MaterialTheme.colorScheme.primary,
+        label = "buttonColor"
+    )
+
     Box(
         modifier = Modifier
             .padding(top = 75.dp)
@@ -63,15 +74,8 @@ fun QuestionCard(
             Spacer(modifier = Modifier.height(15.dp))
 
             when (question.answerType) {
-                AnswerType.CHOICE ->
+                AnswerType.CHOICE -> {
                     question.options.forEach { option ->
-                        var isClicked by remember { mutableStateOf(false) }
-
-                        val buttonColor by animateColorAsState(
-                            targetValue = if (isClicked) MaterialTheme.colorScheme.secondary
-                                else MaterialTheme.colorScheme.primary,
-                            label = "buttonColor"
-                        )
 
                         Button(
                             modifier = Modifier
@@ -94,8 +98,34 @@ fun QuestionCard(
                             )
                         }
                     }
+                }
 
-                AnswerType.SLIDER -> TODO()
+                AnswerType.SLIDER -> {
+                    val selectedValue = remember { mutableFloatStateOf(1f) }
+
+                    HourSlider(selectedValue = selectedValue)
+
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(2.5.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = buttonColor
+                        ),
+                        onClick = {
+                            isClicked = !isClicked
+                            onAnswerSelected(AnswerOption.Hours(selectedValue.floatValue.roundToInt()))
+                        }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.confirm_button),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
             }
         }
     }

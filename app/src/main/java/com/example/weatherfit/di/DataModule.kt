@@ -2,7 +2,6 @@ package com.example.weatherfit.di
 
 import android.content.Context
 import com.example.weatherfit.data.mapper.WeatherDataApiToDomainMapper
-import com.example.weatherfit.data.network.model.weather.WeatherDataFromApi
 import com.example.weatherfit.data.network.service.IpInfoApi
 import com.example.weatherfit.data.network.service.WeatherApi
 import com.example.weatherfit.data.repository.LocationRepositoryImpl

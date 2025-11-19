@@ -1,4 +1,4 @@
-package com.example.weatherfit.domain.model
+package com.example.weatherfit.domain.util
 
 enum class QuestionSubject(val key: String) {
     APP_THEME("app_theme"),

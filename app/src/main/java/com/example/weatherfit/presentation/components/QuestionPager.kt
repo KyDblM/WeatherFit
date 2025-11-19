@@ -5,6 +5,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,9 +32,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.weatherfit.R
-import com.example.weatherfit.domain.model.AnswerOption
-import com.example.weatherfit.domain.model.Question
-import com.example.weatherfit.domain.model.QuestionSubject
+import com.example.weatherfit.domain.util.AnswerOption
+import com.example.weatherfit.domain.util.Question
+import com.example.weatherfit.domain.util.QuestionSubject
 import kotlinx.coroutines.launch
 
 @Composable
@@ -41,7 +42,8 @@ fun QuestionPager(
     modifier: Modifier = Modifier,
     questions: List<Question>,
     isItInitialSetup: Boolean,
-    onFinished: (Map<QuestionSubject, AnswerOption>) -> Unit
+    onFinished: (Map<QuestionSubject, AnswerOption>) -> Unit,
+    onCloseClick: () -> Unit
 ) {
     val pagerState = rememberPagerState { questions.size }
     val coroutineScope = rememberCoroutineScope()
@@ -66,7 +68,10 @@ fun QuestionPager(
                 Image(
                     painter = painterResource(R.drawable.interface_close_icon),
                     contentDescription = stringResource(R.string.close_button_description),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                    modifier = Modifier.clickable(
+                        onClick = { onCloseClick() }
+                    )
                 )
             }
         }

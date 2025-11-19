@@ -8,10 +8,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.weatherfit.R
 
-private val Comfortaa = FontFamily(
-    Font(R.font.comfortaa_medium, FontWeight.Medium),
-)
-
 private val Roboto = FontFamily(
     Font(R.font.roboto_regular, FontWeight.Normal),
 )

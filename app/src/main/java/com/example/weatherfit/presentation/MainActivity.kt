@@ -1,20 +1,16 @@
 package com.example.weatherfit.presentation
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.graphics.Color
-import android.location.LocationManager
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
-import android.os.Looper
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -48,42 +44,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.weatherfit.R
-import com.example.weatherfit.domain.repository.QuestionsRepository
+import com.example.weatherfit.domain.util.QuestionsRepository
 import com.example.weatherfit.presentation.components.CustomNavigationBar
 import com.example.weatherfit.presentation.navigation.NavigationRoutes
 import com.example.weatherfit.presentation.screens.HomeScreen
 import com.example.weatherfit.presentation.screens.RegistrationScreen
+import com.example.weatherfit.presentation.screens.SurveyScreen
 import com.example.weatherfit.presentation.theme.WeatherFitTheme
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.time.Duration
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
-
-    private val locationPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) { permissions ->
-            val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
-
-            if (fineGranted && isGpsAvailable()) {
-                getGpsLocation()
-            }
-            else {
-                if (isInternetAvailable()) {
-                    getIpLocation()
-                }
-            }
-        }
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,7 +79,7 @@ class MainActivity : ComponentActivity() {
             )
         )
 
-        locationPermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
+        tryToGetLocation()
 
         setContent {
             LaunchedEffect(viewModel.location.value) {
@@ -170,8 +145,30 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(
                                 paddingValues = paddingValues,
                                 weatherData = viewModel.weather,
+                                suggestion = viewModel.suggestion,
                                 onMannequinClick = {
-                                    TODO("Navigation to the survey or suggestion editing windows")
+                                    navController.navigate(NavigationRoutes.Survey.route)
+                                },
+                                onRetryClick = {
+                                    tryToGetLocation()
+                                }
+                            )
+                        }
+
+                        composable(route = NavigationRoutes.Survey.route) {
+                            SurveyScreen(
+                                paddingValues = paddingValues,
+                                questions = QuestionsRepository().surveyQuestions,
+                                onFinished = { answers ->
+                                    viewModel.surveyAnswers = answers
+                                    viewModel.getSuggestion()
+
+                                    navController.navigate(NavigationRoutes.Home.route)
+
+                                    Toast.makeText(applicationContext, viewModel.suggestion.value!!.description, Toast.LENGTH_SHORT).show()
+                                },
+                                onClose = {
+                                    navController.navigate(NavigationRoutes.Home.route)
                                 }
                             )
                         }
@@ -210,55 +207,22 @@ class MainActivity : ComponentActivity() {
     }
 
     fun isInternetAvailable(): Boolean {
-        val connectivityManager =
-            this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
+        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
     }
 
-    fun isGpsAvailable(): Boolean {
-        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun getGpsLocation() {
-        val fusedClient = LocationServices.getFusedLocationProviderClient(this)
-
-        fusedClient.lastLocation
-            .addOnSuccessListener { location ->
-                if (location != null) {
-                    viewModel.location.value = location.latitude.toString() + "," + location.longitude.toString()
-                } else {
-                    val request = LocationRequest.Builder(
-                        Priority.PRIORITY_HIGH_ACCURACY,
-                        1000L
-                    )
-                        .setMaxUpdates(1)
-                        .build()
-
-                    val callback = object : LocationCallback() {
-                        override fun onLocationResult(result: LocationResult) {
-                            val location = result.lastLocation
-                            if (location != null) {
-                                viewModel.location.value = location.latitude.toString() + "," + location.longitude.toString()
-                            }
-                            fusedClient.removeLocationUpdates(this)
-                        }
-                    }
-
-                    fusedClient.requestLocationUpdates(
-                        request,
-                        callback,
-                        Looper.getMainLooper()
-                    )
-                }
+    private fun tryToGetLocation() {
+        if (isInternetAvailable()) {
+            CoroutineScope(Dispatchers.IO).launch {
+                viewModel.getLocation()
             }
-    }
-
-    private fun getIpLocation() {
-        CoroutineScope(Dispatchers.IO).launch {
-            viewModel.getLocation()
+        }
+        else {
+            Toast.makeText(this, R.string.internet_error_text, Toast.LENGTH_LONG).show()
         }
     }
 }

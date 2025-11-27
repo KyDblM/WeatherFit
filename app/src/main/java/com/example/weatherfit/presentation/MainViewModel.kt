@@ -10,12 +10,15 @@ import com.example.weatherfit.domain.util.AppTheme
 import com.example.weatherfit.domain.util.QuestionSubject
 import com.example.weatherfit.domain.model.WeatherData
 import com.example.weatherfit.domain.mapper.mapRegAnswersToUserSettings
+import com.example.weatherfit.domain.model.FitSuggestion
 import com.example.weatherfit.domain.usecase.CheckSettingsExist
 import com.example.weatherfit.domain.usecase.GetAppTheme
 import com.example.weatherfit.domain.usecase.GetColdSensitivity
+import com.example.weatherfit.domain.usecase.GetCurrentSuggestion
 import com.example.weatherfit.domain.usecase.GetFitSuggestion
 import com.example.weatherfit.domain.usecase.GetLocationFromIp
 import com.example.weatherfit.domain.usecase.GetWeather
+import com.example.weatherfit.domain.usecase.SaveCurrentSuggestion
 import com.example.weatherfit.domain.usecase.SaveSettings
 import com.example.weatherfit.domain.util.Mannequin
 import com.example.weatherfit.presentation.navigation.NavigationItem
@@ -26,6 +29,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import java.time.Duration
+import java.time.LocalDateTime
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -36,22 +41,25 @@ class MainViewModel @Inject constructor(
     private val getLocationFromIpUseCase: GetLocationFromIp,
     private val getWeatherUseCase: GetWeather,
     private val getFitSuggestion: GetFitSuggestion,
-    private val getColdSensitivity: GetColdSensitivity
+    private val getColdSensitivity: GetColdSensitivity,
+    private val saveCurrentSuggestion: SaveCurrentSuggestion,
+    private val getCurrentSuggestion: GetCurrentSuggestion
 ) : ViewModel() {
-
-    val location: MutableState<String> = mutableStateOf("")
-    val weather: MutableState<WeatherData?> = mutableStateOf(null)
-    var suggestion: MutableState<Mannequin?> = mutableStateOf(null)
-
-    var surveyAnswers: Map<QuestionSubject, AnswerOption>? = null
-
     val isDarkTheme: MutableState<Boolean?> = mutableStateOf(
-        value = when (getAppTheme()) {
+        when (getAppTheme()) {
             AppTheme.DARK -> true
             AppTheme.LIGHT -> false
             else -> null
         }
     )
+
+    val currentSuggestion: FitSuggestion? = getCurrentSuggestionFromSharedPreferences()
+
+    val location: MutableState<String> = mutableStateOf("")
+    val weather: MutableState<WeatherData?> = mutableStateOf(null)
+    var suggestion: MutableState<Mannequin?> = mutableStateOf(currentSuggestion?.mannequin)
+
+    var surveyAnswers: Map<QuestionSubject, AnswerOption>? = null
 
     val navigationItems = listOf(
         NavigationItem(
@@ -114,5 +122,35 @@ class MainViewModel @Inject constructor(
             surveyAnswers = surveyAnswers!!,
             userColdSensitivity = getColdSensitivity.execute()
         )
+    }
+
+    fun saveCurrentSuggestionToSharedPreferences() {
+        if (suggestion.value != null) {
+            saveCurrentSuggestion.execute(
+                FitSuggestion(
+                    time = LocalDateTime.now().toString(),
+                    lifetime = surveyAnswers!![QuestionSubject.HOURS]?.getHours()!!,
+                    mannequin = suggestion.value!!
+                )
+            )
+        }
+    }
+
+    fun getCurrentSuggestionFromSharedPreferences() : FitSuggestion? {
+        val sharedPreferencesSuggestion = getCurrentSuggestion.execute()
+
+        return if (sharedPreferencesSuggestion != null) {
+            if (Duration.between(
+                    LocalDateTime.parse(sharedPreferencesSuggestion.time), LocalDateTime.now()
+                ).toHours() >= sharedPreferencesSuggestion.lifetime) {
+                null
+            }
+            else {
+                sharedPreferencesSuggestion
+            }
+        }
+        else {
+            null
+        }
     }
 }

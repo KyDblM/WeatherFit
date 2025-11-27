@@ -162,6 +162,7 @@ class MainActivity : ComponentActivity() {
                                 onFinished = { answers ->
                                     viewModel.surveyAnswers = answers
                                     viewModel.getSuggestion()
+                                    viewModel.saveCurrentSuggestionToSharedPreferences()
 
                                     navController.navigate(NavigationRoutes.Home.route)
 

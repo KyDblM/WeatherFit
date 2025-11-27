@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 val ipKey: String = gradleLocalProperties(rootDir, providers).getProperty("IP_API_KEY")
@@ -83,7 +84,8 @@ dependencies {
     // Google Play Services
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
-    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    // Kotlinx Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.57.1")

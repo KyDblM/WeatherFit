@@ -1,7 +1,10 @@
 package com.example.weatherfit.di
 
+import android.app.Application
+import androidx.room.Room
 import com.example.weatherfit.data.network.service.IpInfoApi
 import com.example.weatherfit.data.network.service.WeatherApi
+import com.example.weatherfit.data.storage.database.Database
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -9,6 +12,7 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Named
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -39,5 +43,15 @@ class AppModule {
     @Provides
     fun provideWeatherApi(@Named("WeatherDataRetrofit") retrofit: Retrofit): WeatherApi {
         return retrofit.create(WeatherApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDatabase(application: Application): Database {
+        return Room.databaseBuilder(
+            application,
+            Database::class.java,
+            Database.DATABASE_NAME
+        ).build()
     }
 }

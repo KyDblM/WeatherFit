@@ -12,14 +12,18 @@ import com.example.weatherfit.domain.model.WeatherData
 import com.example.weatherfit.domain.mapper.mapRegAnswersToUserSettings
 import com.example.weatherfit.domain.model.FitSuggestion
 import com.example.weatherfit.domain.usecase.CheckSettingsExist
+import com.example.weatherfit.domain.usecase.DeleteSuggestionFromDB
+import com.example.weatherfit.domain.usecase.DeleteSuggestionsFromDB
 import com.example.weatherfit.domain.usecase.GetAppTheme
 import com.example.weatherfit.domain.usecase.GetColdSensitivity
 import com.example.weatherfit.domain.usecase.GetCurrentSuggestion
 import com.example.weatherfit.domain.usecase.GetFitSuggestion
 import com.example.weatherfit.domain.usecase.GetLocationFromIp
+import com.example.weatherfit.domain.usecase.GetSuggestionsFromDb
 import com.example.weatherfit.domain.usecase.GetWeather
 import com.example.weatherfit.domain.usecase.SaveCurrentSuggestion
 import com.example.weatherfit.domain.usecase.SaveSettings
+import com.example.weatherfit.domain.usecase.SaveSuggestionInDB
 import com.example.weatherfit.domain.util.Mannequin
 import com.example.weatherfit.presentation.navigation.NavigationItem
 import com.example.weatherfit.presentation.navigation.NavigationRoutes
@@ -43,7 +47,11 @@ class MainViewModel @Inject constructor(
     private val getFitSuggestion: GetFitSuggestion,
     private val getColdSensitivity: GetColdSensitivity,
     private val saveCurrentSuggestion: SaveCurrentSuggestion,
-    private val getCurrentSuggestion: GetCurrentSuggestion
+    private val getCurrentSuggestion: GetCurrentSuggestion,
+    private val saveSuggestion: SaveSuggestionInDB,
+    private val deleteSuggestion: DeleteSuggestionFromDB,
+    private val deleteSuggestions: DeleteSuggestionsFromDB,
+    private val getSuggestions: GetSuggestionsFromDb
 ) : ViewModel() {
     val isDarkTheme: MutableState<Boolean?> = mutableStateOf(
         when (getAppTheme()) {
@@ -130,7 +138,9 @@ class MainViewModel @Inject constructor(
                 FitSuggestion(
                     time = LocalDateTime.now().toString(),
                     lifetime = surveyAnswers!![QuestionSubject.HOURS]?.getHours()!!,
-                    mannequin = suggestion.value!!
+                    mannequin = suggestion.value!!,
+                    weatherIcon = weather.value!!.weatherIcon,
+                    temperature = weather.value!!.temperature
                 )
             )
         }
@@ -151,6 +161,14 @@ class MainViewModel @Inject constructor(
         }
         else {
             null
+        }
+    }
+
+    fun saveSuggestionInDatabase() {
+        if (currentSuggestion != null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                saveSuggestion.execute(currentSuggestion)
+            }
         }
     }
 }

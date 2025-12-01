@@ -6,10 +6,13 @@ import com.example.weatherfit.data.network.service.IpInfoApi
 import com.example.weatherfit.data.network.service.WeatherApi
 import com.example.weatherfit.data.repository.CurrentSuggestionRepositoryImpl
 import com.example.weatherfit.data.repository.LocationRepositoryImpl
+import com.example.weatherfit.data.repository.SuggestionsDbRepositoryImpl
 import com.example.weatherfit.data.repository.UserSettingsRepositoryImpl
 import com.example.weatherfit.data.repository.WeatherDataRepositoryImpl
+import com.example.weatherfit.data.storage.dao.SuggestionDao
 import com.example.weatherfit.domain.repository.CurrentSuggestionRepository
 import com.example.weatherfit.domain.repository.LocationRepository
+import com.example.weatherfit.domain.repository.SuggestionsDbRepository
 import com.example.weatherfit.domain.repository.UserSettingsRepository
 import com.example.weatherfit.domain.repository.WeatherDataRepository
 import dagger.Module
@@ -48,5 +51,10 @@ class DataModule {
     @Provides
     fun provideCurrentSuggestionRepository(@ApplicationContext context: Context): CurrentSuggestionRepository {
         return CurrentSuggestionRepositoryImpl(context)
+    }
+
+    @Provides
+    fun provideSuggestionsDbRepository(dao: SuggestionDao): SuggestionsDbRepository {
+        return SuggestionsDbRepositoryImpl(dao)
     }
 }

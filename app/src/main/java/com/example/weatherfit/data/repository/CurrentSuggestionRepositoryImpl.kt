@@ -13,7 +13,6 @@ class CurrentSuggestionRepositoryImpl(val context: Context): CurrentSuggestionRe
     private val sharedPreferences = context.getSharedPreferences("current_suggestion", Context.MODE_PRIVATE)
 
     override fun save(suggestion: FitSuggestion) {
-        //val suggestionJson = Json.encodeToString(suggestion)
         val suggestionJson = Json.encodeToString(suggestion)
 
         sharedPreferences.edit { putString(SUGGESTION_KEY, suggestionJson) }

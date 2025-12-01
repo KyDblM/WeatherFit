@@ -163,10 +163,9 @@ class MainActivity : ComponentActivity() {
                                     viewModel.surveyAnswers = answers
                                     viewModel.getSuggestion()
                                     viewModel.saveCurrentSuggestionToSharedPreferences()
+                                    viewModel.saveSuggestionInDatabase()
 
                                     navController.navigate(NavigationRoutes.Home.route)
-
-                                    Toast.makeText(applicationContext, viewModel.suggestion.value!!.description, Toast.LENGTH_SHORT).show()
                                 },
                                 onClose = {
                                     navController.navigate(NavigationRoutes.Home.route)

@@ -3,7 +3,6 @@ package com.example.weatherfit.domain.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.weatherfit.domain.util.Feedback
-import com.example.weatherfit.domain.util.FeedbackRepository
 import com.example.weatherfit.domain.util.Mannequin
 import kotlinx.serialization.Serializable
 
@@ -16,5 +15,5 @@ data class FitSuggestion(
     val mannequin: Mannequin,
     val weatherIcon: Int,
     val temperature: Int,
-    val feedback: Feedback = FeedbackRepository.NORMAL.feedback
+    val feedback: Feedback? = null
 )

@@ -66,6 +66,7 @@ class MainViewModel @Inject constructor(
     val location: MutableState<String> = mutableStateOf("")
     val weather: MutableState<WeatherData?> = mutableStateOf(null)
     var suggestion: MutableState<Mannequin?> = mutableStateOf(currentSuggestion?.mannequin)
+    val suggestionsHistory = mutableStateOf<List<FitSuggestion>>(emptyList())
 
     var surveyAnswers: Map<QuestionSubject, AnswerOption>? = null
 
@@ -168,6 +169,20 @@ class MainViewModel @Inject constructor(
         if (currentSuggestion != null) {
             CoroutineScope(Dispatchers.IO).launch {
                 saveSuggestion.execute(currentSuggestion)
+            }
+        }
+    }
+
+    fun getSuggestionsFromDatabase() {
+        CoroutineScope(Dispatchers.IO).launch {
+            suggestionsHistory.value = getSuggestions.execute()
+        }
+    }
+
+    fun deleteSuggestions(suggestions: List<FitSuggestion>) {
+        if (suggestions.isNotEmpty()) {
+            CoroutineScope(Dispatchers.IO).launch {
+                deleteSuggestions.execute(suggestions)
             }
         }
     }

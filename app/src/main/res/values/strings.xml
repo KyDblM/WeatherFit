@@ -39,6 +39,8 @@
     <string name="mannequin_image_description">Манекен</string>
     <string name="navigation_image_description">Иконка навигации</string>
     <string name="information_block_image_description">Иконка блока информации</string>
+    <string name="feedback_image_description">Обратная связь</string>
+    <string name="delete_image_description">Кнопка удаления</string>
 
     <string name="first_mannequin_description">Майка, шорты</string>
     <string name="second_mannequin_description">Футболка, шорты</string>

@@ -47,6 +47,7 @@ import com.example.weatherfit.R
 import com.example.weatherfit.domain.util.QuestionsRepository
 import com.example.weatherfit.presentation.components.CustomNavigationBar
 import com.example.weatherfit.presentation.navigation.NavigationRoutes
+import com.example.weatherfit.presentation.screens.HistoryScreen
 import com.example.weatherfit.presentation.screens.HomeScreen
 import com.example.weatherfit.presentation.screens.RegistrationScreen
 import com.example.weatherfit.presentation.screens.SurveyScreen
@@ -174,17 +175,21 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(route = NavigationRoutes.History.route) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(MaterialTheme.colorScheme.background),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Top,
-                            ) {
-                                Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + 20.dp))
-                                Text(text = stringResource(R.string.navigation_title_history))
-                                Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding() + 20.dp))
-                            }
+                            viewModel.getSuggestionsFromDatabase()
+
+                            HistoryScreen(
+                                paddingValues = paddingValues,
+                                suggestions = viewModel.suggestionsHistory,
+                                onSuggestionClick = { suggestion ->
+                                    TODO("Navigate to suggestion window")
+                                },
+                                onFeedbackClick = { feedback ->
+                                    TODO("Edit suggestion feedback in database and user cold sensitivity in shared preferences")
+                                },
+                                onDeleteSuggestionsClick = { suggestions ->
+                                    viewModel.deleteSuggestions(suggestions)
+                                }
+                            )
                         }
 
                         composable(route = NavigationRoutes.Profile.route) {

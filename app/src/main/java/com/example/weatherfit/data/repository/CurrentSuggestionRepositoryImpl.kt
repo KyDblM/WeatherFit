@@ -22,7 +22,13 @@ class CurrentSuggestionRepositoryImpl(val context: Context): CurrentSuggestionRe
         val suggestionJson = sharedPreferences.getString(SUGGESTION_KEY, null)
 
         return if (suggestionJson != null) {
-            Json.decodeFromString<FitSuggestion>(suggestionJson)
+            try {
+                Json.decodeFromString<FitSuggestion>(suggestionJson)
+            }
+            catch (e: Exception) {
+                null
+
+            }
         }
         else {
             null

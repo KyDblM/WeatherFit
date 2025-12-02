@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.example.weatherfit.data.network.service.IpInfoApi
 import com.example.weatherfit.data.network.service.WeatherApi
+import com.example.weatherfit.data.storage.dao.SuggestionDao
 import com.example.weatherfit.data.storage.database.Database
 import dagger.Module
 import dagger.Provides
@@ -53,5 +54,10 @@ class AppModule {
             Database::class.java,
             Database.DATABASE_NAME
         ).build()
+    }
+
+    @Provides
+    fun provideSuggestionDao(database: Database): SuggestionDao {
+        return database.suggestionDao()
     }
 }

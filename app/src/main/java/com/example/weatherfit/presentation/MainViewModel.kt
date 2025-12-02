@@ -61,7 +61,7 @@ class MainViewModel @Inject constructor(
         }
     )
 
-    val currentSuggestion: FitSuggestion? = getCurrentSuggestionFromSharedPreferences()
+    var currentSuggestion: FitSuggestion? = getCurrentSuggestionFromSharedPreferences()
 
     val location: MutableState<String> = mutableStateOf("")
     val weather: MutableState<WeatherData?> = mutableStateOf(null)
@@ -144,6 +144,8 @@ class MainViewModel @Inject constructor(
                     temperature = weather.value!!.temperature
                 )
             )
+
+            currentSuggestion = getCurrentSuggestionFromSharedPreferences()
         }
     }
 
@@ -168,7 +170,7 @@ class MainViewModel @Inject constructor(
     fun saveSuggestionInDatabase() {
         if (currentSuggestion != null) {
             CoroutineScope(Dispatchers.IO).launch {
-                saveSuggestion.execute(currentSuggestion)
+                saveSuggestion.execute(currentSuggestion!!)
             }
         }
     }
@@ -183,6 +185,8 @@ class MainViewModel @Inject constructor(
         if (suggestions.isNotEmpty()) {
             CoroutineScope(Dispatchers.IO).launch {
                 deleteSuggestions.execute(suggestions)
+
+                suggestionsHistory.value = getSuggestions.execute()
             }
         }
     }

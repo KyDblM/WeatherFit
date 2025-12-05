@@ -62,7 +62,7 @@ fun HistoryScreen(
                         ),
                     painter = painterResource(R.drawable.interface_trash_icon),
                     contentDescription = stringResource(R.string.delete_image_description),
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         }

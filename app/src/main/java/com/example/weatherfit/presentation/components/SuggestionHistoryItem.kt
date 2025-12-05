@@ -7,10 +7,14 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -55,7 +59,7 @@ fun SuggestionHistoryItem(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight()
+            .height(IntrinsicSize.Min)
             .clip(shape = RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.surface)
             .padding(20.dp)
@@ -68,28 +72,32 @@ fun SuggestionHistoryItem(
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Row (
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(2f)
+                    .weight(1.5f),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 MannequinCard(
                     modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1.5f)
                         .customShadow (
                             shadowColor = shadowColor,
                             alpha = 0.4f,
                             shape = RoundedCornerShape(8.dp)
                         ),
                     isItRectangular = false,
-                    mannequin = mutableStateOf(suggestion.mannequin)
+                    mannequin = remember { mutableStateOf(suggestion.mannequin) }
                 )
 
                 val dateTime = LocalDateTime.parse(suggestion.time)
-                val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy 'г.'", Locale("ru"))
+                val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale("ru"))
                 val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
                 Text(
+                    modifier = Modifier.weight(4f),
                     text = "${dateTime.format(dateFormatter)}, ${dateTime.format(timeFormatter)}",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -102,10 +110,11 @@ fun SuggestionHistoryItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
-                    horizontalArrangement = Arrangement.spacedBy(5.dp)
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     FeedbackRepository.entries.forEach { feedbackEntry ->
                         FeedbackItem(
+                            modifier = Modifier.weight(1f),
                             feedback = feedbackEntry.feedback,
                             onFeedbackClick = { feedback ->
                                 onFeedbackClick(feedback)

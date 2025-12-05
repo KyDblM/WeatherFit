@@ -62,7 +62,6 @@ private fun MannequinCardBase(
             .aspectRatio(if (isItRectangular) rectangularRatio else squareRatio)
             .clip(shape = RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.surface)
-            .padding(20.dp)
             .then(
                 if (isItClickable) {
                     Modifier.clickable(
@@ -74,6 +73,14 @@ private fun MannequinCardBase(
                 else {
                     Modifier
                 }
+            )
+            .then(
+                if (isItRectangular) {
+                    Modifier.padding(20.dp)
+                }
+                else {
+                    Modifier.padding(2.5.dp)
+                }
             ),
         contentAlignment = Alignment.BottomEnd
     ) {
@@ -82,7 +89,7 @@ private fun MannequinCardBase(
                 modifier = Modifier.matchParentSize(),
                 painter = painterResource(mannequin.value!!.image),
                 contentDescription = stringResource(R.string.mannequin_image_description),
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.FillHeight
             )
         }
         else {
@@ -90,7 +97,7 @@ private fun MannequinCardBase(
                 modifier = Modifier.matchParentSize(),
                 painter = painterResource(R.drawable.dev_naked_mannequin_example),
                 contentDescription = stringResource(R.string.mannequin_image_description),
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.FillHeight
             )
         }
 

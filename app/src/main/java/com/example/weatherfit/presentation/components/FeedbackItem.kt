@@ -7,6 +7,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +29,7 @@ import com.example.weatherfit.presentation.theme.LightColorScheme
 
 @Composable
 fun FeedbackItem(
+    modifier: Modifier = Modifier,
     feedback: Feedback,
     onFeedbackClick: (Feedback) -> Unit
 ) {
@@ -37,17 +40,16 @@ fun FeedbackItem(
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxHeight()
-            .aspectRatio(1f)
-            .clip(shape = RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(20.dp)
             .customShadow(
                 shadowColor = shadowColor,
                 alpha = 0.4f,
                 shape = RoundedCornerShape(8.dp)
             )
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(5.dp)
             .clickable(
                 onClick = { onFeedbackClick(feedback) },
                 indication = null,
@@ -56,9 +58,7 @@ fun FeedbackItem(
         contentAlignment = Alignment.BottomEnd
     ) {
         Image(
-            modifier = Modifier
-                .fillMaxHeight()
-                .aspectRatio(1f),
+            modifier = Modifier.matchParentSize(),
             painter = painterResource(feedback.image),
             contentDescription = stringResource(R.string.feedback_image_description),
             contentScale = ContentScale.Fit

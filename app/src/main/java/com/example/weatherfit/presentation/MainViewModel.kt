@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.weatherfit.R
 import com.example.weatherfit.domain.util.AnswerOption
 import com.example.weatherfit.domain.util.AppTheme
@@ -16,15 +17,12 @@ import com.example.weatherfit.domain.usecase.DeleteSuggestionFromDB
 import com.example.weatherfit.domain.usecase.DeleteSuggestionsFromDB
 import com.example.weatherfit.domain.usecase.GetAppTheme
 import com.example.weatherfit.domain.usecase.GetColdSensitivity
-import com.example.weatherfit.domain.usecase.GetCurrentSuggestion
 import com.example.weatherfit.domain.usecase.GetFitSuggestion
 import com.example.weatherfit.domain.usecase.GetLocationFromIp
 import com.example.weatherfit.domain.usecase.GetSuggestionsFromDb
 import com.example.weatherfit.domain.usecase.GetWeather
-import com.example.weatherfit.domain.usecase.SaveCurrentSuggestion
 import com.example.weatherfit.domain.usecase.SaveSettings
 import com.example.weatherfit.domain.usecase.SaveSuggestionInDB
-import com.example.weatherfit.domain.util.Mannequin
 import com.example.weatherfit.presentation.navigation.NavigationItem
 import com.example.weatherfit.presentation.navigation.NavigationRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +30,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import java.time.Duration
 import java.time.LocalDateTime
@@ -46,8 +45,6 @@ class MainViewModel @Inject constructor(
     private val getWeatherUseCase: GetWeather,
     private val getFitSuggestion: GetFitSuggestion,
     private val getColdSensitivity: GetColdSensitivity,
-    private val saveCurrentSuggestion: SaveCurrentSuggestion,
-    private val getCurrentSuggestion: GetCurrentSuggestion,
     private val saveSuggestion: SaveSuggestionInDB,
     private val deleteSuggestion: DeleteSuggestionFromDB,
     private val deleteSuggestions: DeleteSuggestionsFromDB,
@@ -61,14 +58,12 @@ class MainViewModel @Inject constructor(
         }
     )
 
-    var currentSuggestion: FitSuggestion? = getCurrentSuggestionFromSharedPreferences()
-
     val location: MutableState<String> = mutableStateOf("")
     val weather: MutableState<WeatherData?> = mutableStateOf(null)
-    var suggestion: MutableState<Mannequin?> = mutableStateOf(currentSuggestion?.mannequin)
-    val suggestionsHistory = mutableStateOf<List<FitSuggestion>>(emptyList())
-
     var surveyAnswers: Map<QuestionSubject, AnswerOption>? = null
+
+    val suggestion = mutableStateOf<FitSuggestion?>(null)
+    val suggestionsHistory = mutableStateOf<List<FitSuggestion>>(emptyList())
 
     val navigationItems = listOf(
         NavigationItem(
@@ -89,6 +84,12 @@ class MainViewModel @Inject constructor(
     )
 
     val startScreen = if (checkSettingsExist()) "home_screen" else "registration_screen"
+
+    init {
+        viewModelScope.launch {
+            suggestion.value = getCurrentSuggestionFromDatabase()
+        }
+    }
 
     fun saveSettings(settings: Map<QuestionSubject, AnswerOption>) {
         val userSettings = mapRegAnswersToUserSettings(settings, context)
@@ -126,51 +127,25 @@ class MainViewModel @Inject constructor(
     }
 
     fun getSuggestion() {
-        suggestion.value = getFitSuggestion.execute(
-            weather = weather.value!!,
-            surveyAnswers = surveyAnswers!!,
-            userColdSensitivity = getColdSensitivity.execute()
-        )
-    }
-
-    fun saveCurrentSuggestionToSharedPreferences() {
-        if (suggestion.value != null) {
-            saveCurrentSuggestion.execute(
-                FitSuggestion(
-                    time = LocalDateTime.now().toString(),
-                    lifetime = surveyAnswers!![QuestionSubject.HOURS]?.getHours()!!,
-                    mannequin = suggestion.value!!,
-                    weatherIcon = weather.value!!.weatherIcon,
-                    temperature = weather.value!!.temperature
-                )
+        if (surveyAnswers != null && weather.value != null) {
+            suggestion.value = FitSuggestion(
+                time = LocalDateTime.now().toString(),
+                lifetime = surveyAnswers!![QuestionSubject.HOURS]?.getHours()!!,
+                mannequin = getFitSuggestion.execute(
+                    weather = weather.value!!,
+                    surveyAnswers = surveyAnswers!!,
+                    userColdSensitivity = getColdSensitivity.execute()
+                ),
+                weatherIcon = weather.value!!.weatherIcon,
+                temperature = weather.value!!.temperature
             )
-
-            currentSuggestion = getCurrentSuggestionFromSharedPreferences()
-        }
-    }
-
-    fun getCurrentSuggestionFromSharedPreferences() : FitSuggestion? {
-        val sharedPreferencesSuggestion = getCurrentSuggestion.execute()
-
-        return if (sharedPreferencesSuggestion != null) {
-            if (Duration.between(
-                    LocalDateTime.parse(sharedPreferencesSuggestion.time), LocalDateTime.now()
-                ).toHours() >= sharedPreferencesSuggestion.lifetime) {
-                null
-            }
-            else {
-                sharedPreferencesSuggestion
-            }
-        }
-        else {
-            null
         }
     }
 
     fun saveSuggestionInDatabase() {
-        if (currentSuggestion != null) {
+        if (suggestion.value != null) {
             CoroutineScope(Dispatchers.IO).launch {
-                saveSuggestion.execute(currentSuggestion!!)
+                saveSuggestion.execute(suggestion.value!!)
             }
         }
     }
@@ -181,11 +156,25 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    suspend fun getCurrentSuggestionFromDatabase(): FitSuggestion? {
+        val currentSuggestion = withContext(Dispatchers.IO) {
+            getSuggestions.execute().firstOrNull()
+        }
+
+        if (currentSuggestion != null) {
+            if (Duration.between(LocalDateTime.parse(currentSuggestion.time), LocalDateTime.now()).toHours() >= currentSuggestion.lifetime) {
+                return null
+            }
+        }
+
+        return currentSuggestion
+    }
+
     fun deleteSuggestions(suggestions: List<FitSuggestion>) {
         if (suggestions.isNotEmpty()) {
             CoroutineScope(Dispatchers.IO).launch {
                 deleteSuggestions.execute(suggestions)
-
+                suggestion.value = getCurrentSuggestionFromDatabase()
                 suggestionsHistory.value = getSuggestions.execute()
             }
         }

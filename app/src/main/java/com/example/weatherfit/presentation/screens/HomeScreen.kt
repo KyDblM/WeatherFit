@@ -26,9 +26,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.weatherfit.R
+import com.example.weatherfit.domain.model.FitSuggestion
 import com.example.weatherfit.presentation.util.InformationBlockType
 import com.example.weatherfit.domain.model.WeatherData
-import com.example.weatherfit.domain.util.Mannequin
 import com.example.weatherfit.presentation.components.InformationBlock
 import com.example.weatherfit.presentation.components.LoadingIndicator
 import com.example.weatherfit.presentation.components.MannequinCard
@@ -37,7 +37,7 @@ import com.example.weatherfit.presentation.components.MannequinCard
 fun HomeScreen(
     paddingValues: PaddingValues,
     weatherData: MutableState<WeatherData?>,
-    suggestion: MutableState<Mannequin?>,
+    suggestion: MutableState<FitSuggestion?>,
     onMannequinClick: () -> Unit,
     onRetryClick: () -> Unit
 ) {
@@ -103,19 +103,19 @@ fun HomeScreen(
             ) {
                 MannequinCard(
                     modifier = Modifier.weight(3f),
-                    mannequin = suggestion,
+                    mannequin = if (suggestion.value != null) suggestion.value!!.mannequin else null,
                     onClick = onMannequinClick
                 )
 
-                if (suggestion.value != null && !suggestion.value!!.baseAccessories.isEmpty()) {
+                if (suggestion.value != null && !suggestion.value!!.mannequin.baseAccessories.isEmpty()) {
                     Column(
                         modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
-                        for (i in 1..suggestion.value!!.baseAccessories.size) {
+                        for (i in 1..suggestion.value!!.mannequin.baseAccessories.size) {
                             InformationBlock(
                                 informationBlockType = InformationBlockType.OnlyImage(
-                                    image = suggestion.value!!.baseAccessories[i - 1].accessory.image
+                                    image = suggestion.value!!.mannequin.baseAccessories[i - 1].accessory.image
                                 )
                             )
                         }

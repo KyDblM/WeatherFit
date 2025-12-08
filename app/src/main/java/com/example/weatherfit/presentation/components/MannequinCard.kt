@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +32,7 @@ private const val arrowRotateAngle = 45f
 fun MannequinCard(
     modifier: Modifier = Modifier,
     isItRectangular: Boolean = true,
-    mannequin: MutableState<Mannequin?>
+    mannequin: Mannequin?
 ) {
     MannequinCardBase(modifier, false, isItRectangular, mannequin, null)
 }
@@ -42,7 +41,7 @@ fun MannequinCard(
 fun MannequinCard(
     modifier: Modifier = Modifier,
     isItRectangular: Boolean = true,
-    mannequin: MutableState<Mannequin?>,
+    mannequin: Mannequin?,
     onClick: () -> Unit
 ) {
     MannequinCardBase(modifier, true, isItRectangular, mannequin, onClick)
@@ -53,7 +52,7 @@ private fun MannequinCardBase(
     modifier: Modifier,
     isItClickable: Boolean,
     isItRectangular: Boolean,
-    mannequin: MutableState<Mannequin?>,
+    mannequin: Mannequin?,
     onClick: (() -> Unit)?
 ) {
     Box(
@@ -84,10 +83,10 @@ private fun MannequinCardBase(
             ),
         contentAlignment = Alignment.BottomEnd
     ) {
-        if (mannequin.value != null) {
+        if (mannequin != null) {
             Image(
                 modifier = Modifier.matchParentSize(),
-                painter = painterResource(mannequin.value!!.image),
+                painter = painterResource(mannequin.image),
                 contentDescription = stringResource(R.string.mannequin_image_description),
                 contentScale = ContentScale.FillHeight
             )

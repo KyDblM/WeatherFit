@@ -27,11 +27,16 @@
     <string name="humidity_title">Влажность</string>
     <string name="rain_title">Осадки</string>
     <string name="uv_index_title">УФ-индекс</string>
+    <string name="confirmation_title">Подтверждение</string>
     
     <string name="confirm_button">Подтвердить</string>
     <string name="retry_button">Повторить</string>
+    <string name="yes_button">Да</string>
+    <string name="no_button">Нет</string>
 
     <string name="internet_error_text">Требуется подключение к интернету</string>
+    <string name="delete_all_suggestions_confirmation_text">Вы действительно хотите удалить все предложения?</string>
+    <string name="delete_suggestion_confirmation_text">Вы действительно хотите удалить это предложение?</string>
 
     <string name="close_button_description">Кнопка выхода</string>
     <string name="weather_icon_description">Иконка погоды</string>

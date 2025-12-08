@@ -1,6 +1,5 @@
 package com.example.weatherfit.di
 
-import com.example.weatherfit.domain.repository.CurrentSuggestionRepository
 import com.example.weatherfit.domain.repository.LocationRepository
 import com.example.weatherfit.domain.repository.SuggestionsDbRepository
 import com.example.weatherfit.domain.repository.UserSettingsRepository
@@ -10,12 +9,10 @@ import com.example.weatherfit.domain.usecase.DeleteSuggestionFromDB
 import com.example.weatherfit.domain.usecase.DeleteSuggestionsFromDB
 import com.example.weatherfit.domain.usecase.GetAppTheme
 import com.example.weatherfit.domain.usecase.GetColdSensitivity
-import com.example.weatherfit.domain.usecase.GetCurrentSuggestion
 import com.example.weatherfit.domain.usecase.GetFitSuggestion
 import com.example.weatherfit.domain.usecase.GetLocationFromIp
 import com.example.weatherfit.domain.usecase.GetSuggestionsFromDb
 import com.example.weatherfit.domain.usecase.GetWeather
-import com.example.weatherfit.domain.usecase.SaveCurrentSuggestion
 import com.example.weatherfit.domain.usecase.SaveSettings
 import com.example.weatherfit.domain.usecase.SaveSuggestionInDB
 import dagger.Module
@@ -60,16 +57,6 @@ class DomainModule {
     @Provides
     fun provideGetFitSuggestionUseCase(): GetFitSuggestion {
         return GetFitSuggestion()
-    }
-
-    @Provides
-    fun provideSaveCurrentSuggestionUseCase(currentSuggestionRepository: CurrentSuggestionRepository) : SaveCurrentSuggestion {
-        return SaveCurrentSuggestion(currentSuggestionRepository)
-    }
-
-    @Provides
-    fun provideGetCurrentSuggestionUseCase(currentSuggestionRepository: CurrentSuggestionRepository) : GetCurrentSuggestion {
-        return GetCurrentSuggestion(currentSuggestionRepository)
     }
 
     @Provides

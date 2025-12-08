@@ -3,11 +3,14 @@ package com.example.weatherfit.presentation.screens
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -34,49 +37,54 @@ fun HistoryScreen(
     onFeedbackClick: (Feedback) -> Unit,
     onDeleteSuggestionsClick: (List<FitSuggestion>) -> Unit
 ) {
-    LazyColumn(
+    Column(
         modifier = Modifier
-            .padding(horizontal = 20.dp)
             .fillMaxSize()
             .padding(
                 top = paddingValues.calculateTopPadding() + 20.dp,
-                bottom = paddingValues.calculateBottomPadding() + 10.dp
+                start = 20.dp,
+                end = 20.dp
             ),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+        verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
-        item {
-            Row (
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .clickable(
-                            onClick = { onDeleteSuggestionsClick(suggestions.value) },
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
-                        ),
-                    painter = painterResource(R.drawable.interface_trash_icon),
-                    contentDescription = stringResource(R.string.delete_image_description),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
+        Row (
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End
+        ) {
+            Icon(
+                modifier = Modifier.clickable(
+                    onClick = { onDeleteSuggestionsClick(suggestions.value) },
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ),
+                painter = painterResource(R.drawable.interface_trash_icon),
+                contentDescription = stringResource(R.string.delete_image_description),
+                tint = MaterialTheme.colorScheme.primary
+            )
         }
 
-        items(suggestions.value.size) { suggestion ->
-            SuggestionHistoryItem(
-                suggestion = suggestions.value[suggestion],
-                onSuggestionClick = {
-                    onSuggestionClick(suggestions.value[suggestion])
-                },
-                onFeedbackClick = { feedback ->
-                    onFeedbackClick(feedback)
+        if (suggestions.value.isNotEmpty()) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                items(suggestions.value.size) { suggestion ->
+                    SuggestionHistoryItem(
+                        suggestion = suggestions.value[suggestion],
+                        onSuggestionClick = {
+                            onSuggestionClick(suggestions.value[suggestion])
+                        },
+                        onFeedbackClick = { feedback ->
+                            onFeedbackClick(feedback)
+                        }
+                    )
                 }
-            )
+
+                item {
+                    Spacer(Modifier.height(paddingValues.calculateBottomPadding() + 10.dp))
+                }
+            }
         }
     }
 }

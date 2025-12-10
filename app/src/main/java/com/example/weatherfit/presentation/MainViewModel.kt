@@ -23,6 +23,7 @@ import com.example.weatherfit.domain.usecase.GetSuggestionsFromDb
 import com.example.weatherfit.domain.usecase.GetWeather
 import com.example.weatherfit.domain.usecase.SaveSettings
 import com.example.weatherfit.domain.usecase.SaveSuggestionInDB
+import com.example.weatherfit.domain.usecase.UpdateSuggestionInDb
 import com.example.weatherfit.presentation.navigation.NavigationItem
 import com.example.weatherfit.presentation.navigation.NavigationRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,7 +49,8 @@ class MainViewModel @Inject constructor(
     private val saveSuggestion: SaveSuggestionInDB,
     private val deleteSuggestion: DeleteSuggestionFromDB,
     private val deleteSuggestions: DeleteSuggestionsFromDB,
-    private val getSuggestions: GetSuggestionsFromDb
+    private val getSuggestions: GetSuggestionsFromDb,
+    private val updateSuggestion: UpdateSuggestionInDb
 ) : ViewModel() {
     val isDarkTheme: MutableState<Boolean?> = mutableStateOf(
         when (getAppTheme()) {
@@ -177,6 +179,12 @@ class MainViewModel @Inject constructor(
                 suggestion.value = getCurrentSuggestionFromDatabase()
                 suggestionsHistory.value = getSuggestions.execute()
             }
+        }
+    }
+
+    fun updateSuggestion(suggestion: FitSuggestion) {
+        CoroutineScope(Dispatchers.IO).launch {
+            updateSuggestion.execute(suggestion)
         }
     }
 }

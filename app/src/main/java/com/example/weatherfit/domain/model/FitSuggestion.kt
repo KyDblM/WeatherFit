@@ -15,5 +15,5 @@ data class FitSuggestion(
     val mannequin: Mannequin,
     val weatherIcon: Int,
     val temperature: Int,
-    val feedback: Feedback? = null
+    var feedback: Feedback? = null
 )

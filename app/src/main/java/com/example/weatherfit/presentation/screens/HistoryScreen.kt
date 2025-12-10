@@ -34,7 +34,7 @@ fun HistoryScreen(
     paddingValues: PaddingValues,
     suggestions: MutableState<List<FitSuggestion>>,
     onSuggestionClick: (FitSuggestion) -> Unit,
-    onFeedbackClick: (Feedback) -> Unit,
+    onFeedbackClick: (FitSuggestion) -> Unit,
     onDeleteSuggestionsClick: (List<FitSuggestion>) -> Unit
 ) {
     val isDeleteDialogVisible = remember {mutableStateOf(false) }
@@ -91,7 +91,8 @@ fun HistoryScreen(
                             onSuggestionClick(suggestions.value[suggestion])
                         },
                         onFeedbackClick = { feedback ->
-                            onFeedbackClick(feedback)
+                            suggestions.value[suggestion].feedback = feedback
+                            onFeedbackClick(suggestions.value[suggestion])
                         }
                     )
                 }

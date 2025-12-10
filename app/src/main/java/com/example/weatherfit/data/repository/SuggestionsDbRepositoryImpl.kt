@@ -23,4 +23,8 @@ class SuggestionsDbRepositoryImpl @Inject constructor(
     override suspend fun getSuggestions(): List<FitSuggestion> {
         return dao.getSuggestions()
     }
+
+    override suspend fun updateSuggestion(suggestion: FitSuggestion) {
+        dao.updateSuggestion(suggestion)
+    }
 }

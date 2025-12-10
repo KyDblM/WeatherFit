@@ -182,8 +182,8 @@ class MainActivity : ComponentActivity() {
                                 onSuggestionClick = { suggestion ->
                                     TODO("Navigate to suggestion window")
                                 },
-                                onFeedbackClick = { feedback ->
-                                    TODO("Edit suggestion feedback in database and user cold sensitivity in shared preferences")
+                                onFeedbackClick = { suggestion ->
+                                    viewModel.updateSuggestion(suggestion)
                                 },
                                 onDeleteSuggestionsClick = { suggestions ->
                                     viewModel.deleteSuggestions(suggestions)

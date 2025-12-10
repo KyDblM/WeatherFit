@@ -15,6 +15,7 @@ import com.example.weatherfit.domain.usecase.GetSuggestionsFromDb
 import com.example.weatherfit.domain.usecase.GetWeather
 import com.example.weatherfit.domain.usecase.SaveSettings
 import com.example.weatherfit.domain.usecase.SaveSuggestionInDB
+import com.example.weatherfit.domain.usecase.UpdateSuggestionInDb
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -77,5 +78,10 @@ class DomainModule {
     @Provides
     fun provideGetSuggestionsFromDbUseCase(suggestionsDbRepository: SuggestionsDbRepository) : GetSuggestionsFromDb {
         return GetSuggestionsFromDb(suggestionsDbRepository)
+    }
+
+    @Provides
+    fun provideUpdateSuggestionInDbUseCase(suggestionsDbRepository: SuggestionsDbRepository) : UpdateSuggestionInDb {
+        return UpdateSuggestionInDb(suggestionsDbRepository)
     }
 }

@@ -4,7 +4,9 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.example.weatherfit.domain.model.FitSuggestion
+import com.example.weatherfit.domain.util.Feedback
 
 @Dao
 interface SuggestionDao {
@@ -19,4 +21,7 @@ interface SuggestionDao {
 
     @Query("SELECT * FROM suggestions ORDER BY time DESC")
     suspend fun getSuggestions(): List<FitSuggestion>
+
+    @Update
+    suspend fun updateSuggestion(suggestion: FitSuggestion)
 }

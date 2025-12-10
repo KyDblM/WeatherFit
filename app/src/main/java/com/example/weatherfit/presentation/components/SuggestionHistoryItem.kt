@@ -15,11 +15,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +54,8 @@ fun SuggestionHistoryItem(
     else {
         MaterialTheme.colorScheme.background
     }
+
+    val feedbackState = remember { mutableStateOf(suggestion.feedback) }
 
     Box(
         modifier = Modifier
@@ -102,32 +106,21 @@ fun SuggestionHistoryItem(
                 )
             }
 
-            if (suggestion.feedback == null) {
-                Row (
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    FeedbackRepository.entries.forEach { feedbackEntry ->
-                        FeedbackItem(
-                            modifier = Modifier.weight(1f),
-                            feedback = feedbackEntry.feedback,
-                            onFeedbackClick = { feedback ->
-                                onFeedbackClick(feedback)
-                            }
-                        )
+            if (feedbackState.value == null) {
+                FeedbackRow(
+                    modifier = Modifier.weight(1f),
+                    onFeedbackClick = { feedback ->
+                        feedbackState.value = feedback
+                        onFeedbackClick(feedback)
                     }
-                }
+                )
             }
         }
 
-        if (suggestion.feedback != null) {
+        if (feedbackState.value != null) {
             Image(
-                modifier = Modifier
-                    .width(30.dp)
-                    .aspectRatio(1f),
-                painter = painterResource(suggestion.feedback.image),
+                modifier = Modifier.size(30.dp),
+                painter = painterResource(suggestion.feedback!!.image),
                 contentDescription = stringResource(R.string.feedback_image_description),
                 contentScale = ContentScale.Fit
             )

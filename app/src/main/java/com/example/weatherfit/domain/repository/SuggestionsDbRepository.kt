@@ -10,4 +10,6 @@ interface SuggestionsDbRepository {
     suspend fun deleteSuggestions(suggestions: List<FitSuggestion>)
 
     suspend fun getSuggestions(): List<FitSuggestion>
+
+    suspend fun updateSuggestion(suggestion: FitSuggestion)
 }

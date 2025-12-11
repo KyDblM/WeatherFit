@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.weatherfit.R
 import com.example.weatherfit.domain.model.FitSuggestion
+import com.example.weatherfit.presentation.components.ConfirmationDialog
 import com.example.weatherfit.presentation.components.FeedbackRow
 import com.example.weatherfit.presentation.components.InformationBlock
 import com.example.weatherfit.presentation.components.MannequinCard
@@ -47,6 +48,19 @@ fun SuggestionScreen(
     onDelete: (FitSuggestion) -> Unit,
     onFeedbackClick: (FitSuggestion) -> Unit
 ) {
+    val isDeleteDialogVisible = remember {mutableStateOf(false) }
+
+    if (isDeleteDialogVisible.value) {
+        ConfirmationDialog(
+            confirmationText = stringResource(R.string.delete_suggestion_confirmation_text),
+            onDismiss = { isDeleteDialogVisible.value = false },
+            onConfirm = {
+                onDelete(suggestion)
+                isDeleteDialogVisible.value = false
+            }
+        )
+    }
+
     val feedbackState = remember { mutableStateOf(suggestion.feedback) }
 
     Column(
@@ -99,7 +113,7 @@ fun SuggestionScreen(
                     .fillMaxHeight()
                     .weight(1f)
                     .clickable(
-                        onClick = { onDelete(suggestion) },
+                        onClick = { isDeleteDialogVisible.value = true },
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     ),

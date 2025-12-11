@@ -50,6 +50,7 @@ import com.example.weatherfit.presentation.navigation.NavigationRoutes
 import com.example.weatherfit.presentation.screens.HistoryScreen
 import com.example.weatherfit.presentation.screens.HomeScreen
 import com.example.weatherfit.presentation.screens.RegistrationScreen
+import com.example.weatherfit.presentation.screens.SuggestionScreen
 import com.example.weatherfit.presentation.screens.SurveyScreen
 import com.example.weatherfit.presentation.theme.WeatherFitTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -180,7 +181,8 @@ class MainActivity : ComponentActivity() {
                                 paddingValues = paddingValues,
                                 suggestions = viewModel.suggestionsHistory,
                                 onSuggestionClick = { suggestion ->
-                                    TODO("Navigate to suggestion window")
+                                    viewModel.selectedSuggestion = suggestion
+                                    navController.navigate(NavigationRoutes.Suggestion.route)
                                 },
                                 onFeedbackClick = { suggestion ->
                                     viewModel.updateSuggestion(suggestion)
@@ -189,6 +191,27 @@ class MainActivity : ComponentActivity() {
                                     viewModel.deleteSuggestions(suggestions)
                                 }
                             )
+                        }
+
+                        composable(route = NavigationRoutes.Suggestion.route) {
+                            if (viewModel.selectedSuggestion != null) {
+                                SuggestionScreen(
+                                    paddingValues = paddingValues,
+                                    suggestion = viewModel.selectedSuggestion!!,
+                                    onClose = {
+                                        navController.navigate(NavigationRoutes.History.route)
+                                        viewModel.selectedSuggestion = null
+                                    },
+                                    onDelete = { suggestion ->
+                                        navController.navigate(NavigationRoutes.History.route)
+                                        viewModel.deleteSuggestion(suggestion)
+                                        viewModel.selectedSuggestion = null
+                                    },
+                                    onFeedbackClick = { suggestion ->
+                                        viewModel.updateSuggestion(suggestion)
+                                    }
+                                )
+                            }
                         }
 
                         composable(route = NavigationRoutes.Profile.route) {

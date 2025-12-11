@@ -63,7 +63,7 @@ fun HomeScreen(
                 Text(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .weight(0.7f),
+                        .weight(0.65f),
                     text = weather.city,
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -73,7 +73,7 @@ fun HomeScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .weight(0.3f),
+                        .weight(0.35f),
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -87,7 +87,7 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.width(10.dp))
 
                     Text(
-                        text = weather.temperature.toString() + "°",
+                        text = weather.temperature.toString() + "°C",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.End

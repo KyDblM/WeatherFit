@@ -23,6 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.weatherfit.R
@@ -46,6 +47,8 @@ fun InformationBlock(
             .aspectRatio(
                 when(informationBlockType) {
                     is InformationBlockType.OnlyImage -> squareRatio
+                    is InformationBlockType.OnlyIcon -> squareRatio
+                    is InformationBlockType.OnlyText -> squareRatio
                     is InformationBlockType.TextWithTitleAndImage -> rectangularRatio
                 }
             )
@@ -61,6 +64,25 @@ fun InformationBlock(
                     painter = painterResource(informationBlockType.image),
                     contentDescription = stringResource(R.string.information_block_image_description),
                     contentScale = ContentScale.Inside
+                )
+            }
+
+            is InformationBlockType.OnlyIcon -> {
+                Icon(
+                    modifier = Modifier.fillMaxSize(0.75f),
+                    painter = painterResource(informationBlockType.icon),
+                    contentDescription = stringResource(R.string.information_block_image_description),
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+            is InformationBlockType.OnlyText -> {
+                Text(
+                    text = informationBlockType.text,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold
                 )
             }
 

@@ -5,5 +5,6 @@ sealed class NavigationRoutes(val route: String) {
     object Home : NavigationRoutes("home_screen")
     object Survey : NavigationRoutes("survey_screen")
     object History : NavigationRoutes("history_screen")
+    object Suggestion : NavigationRoutes("suggestion")
     object Profile : NavigationRoutes("profile_screen")
 }

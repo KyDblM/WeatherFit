@@ -33,10 +33,16 @@
     <string name="retry_button">Повторить</string>
     <string name="yes_button">Да</string>
     <string name="no_button">Нет</string>
+    <string name="change_theme_button">Изменить тему</string>
+    <string name="change_mannequin_button">Изменить манекена</string>
+    <string name="reset_cold_sensitivity_button">Сбросить коэффициент</string>
 
     <string name="internet_error_text">Требуется подключение к интернету</string>
     <string name="delete_all_suggestions_confirmation_text">Вы действительно хотите удалить все предложения?</string>
     <string name="delete_suggestion_confirmation_text">Вы действительно хотите удалить это предложение?</string>
+    <string name="reset_cold_sensitivity_confirmation_text">Вы действительно хотите сбросить индивидуальный коэффициент? После его сброса предложения будут выдаваться менее точно и потребуют калибровки в виде обратной связи.</string>
+    <string name="change_mannequin_confirmation_text">Вы действительно хотите поменять пол манекена на</string>
+    <string name="change_theme_confirmation_text">Вы действительно хотите поменять тему на</string>
 
     <string name="close_button_description">Кнопка выхода</string>
     <string name="weather_icon_description">Иконка погоды</string>

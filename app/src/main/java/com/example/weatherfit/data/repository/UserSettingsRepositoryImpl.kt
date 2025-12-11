@@ -5,6 +5,7 @@ import com.example.weatherfit.domain.model.UserSettings
 import com.example.weatherfit.domain.repository.UserSettingsRepository
 import androidx.core.content.edit
 import com.example.weatherfit.domain.util.AppTheme
+import com.example.weatherfit.domain.util.MannequinGender
 
 private const val MANNEQUIN_TYPE_KEY = "mannequin_type"
 private const val THEME_KEY = "app_theme"
@@ -35,6 +36,21 @@ class UserSettingsRepositoryImpl(val context: Context) : UserSettingsRepository 
             }
             else if (theme == context.getString(AppTheme.DARK.label)) {
                 return AppTheme.DARK
+            }
+        }
+
+        return null
+    }
+
+    override fun getMannequinGender(): MannequinGender? {
+        if (sharedPreferences.contains(MANNEQUIN_TYPE_KEY)) {
+            val gender = sharedPreferences.getString(MANNEQUIN_TYPE_KEY, "")
+
+            if (gender == context.getString(MannequinGender.MALE.label)) {
+                return MannequinGender.MALE
+            }
+            else if (gender == context.getString(MannequinGender.FEMALE.label)) {
+                return MannequinGender.FEMALE
             }
         }
 

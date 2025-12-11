@@ -19,11 +19,13 @@ import com.example.weatherfit.domain.usecase.GetAppTheme
 import com.example.weatherfit.domain.usecase.GetColdSensitivity
 import com.example.weatherfit.domain.usecase.GetFitSuggestion
 import com.example.weatherfit.domain.usecase.GetLocationFromIp
+import com.example.weatherfit.domain.usecase.GetMannequinGender
 import com.example.weatherfit.domain.usecase.GetSuggestionsFromDb
 import com.example.weatherfit.domain.usecase.GetWeather
 import com.example.weatherfit.domain.usecase.SaveSettings
 import com.example.weatherfit.domain.usecase.SaveSuggestionInDB
 import com.example.weatherfit.domain.usecase.UpdateSuggestionInDb
+import com.example.weatherfit.domain.util.MannequinGender
 import com.example.weatherfit.presentation.navigation.NavigationItem
 import com.example.weatherfit.presentation.navigation.NavigationRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,6 +44,7 @@ class MainViewModel @Inject constructor(
     private val saveSettingsUseCase: SaveSettings,
     private val checkSettingsExistUseCase: CheckSettingsExist,
     private val getAppThemeUseCase: GetAppTheme,
+    private val getMannequinGender: GetMannequinGender,
     private val getLocationFromIpUseCase: GetLocationFromIp,
     private val getWeatherUseCase: GetWeather,
     private val getFitSuggestion: GetFitSuggestion,
@@ -50,7 +53,7 @@ class MainViewModel @Inject constructor(
     private val deleteSuggestion: DeleteSuggestionFromDB,
     private val deleteSuggestions: DeleteSuggestionsFromDB,
     private val getSuggestions: GetSuggestionsFromDb,
-    private val updateSuggestion: UpdateSuggestionInDb
+    private val updateSuggestion: UpdateSuggestionInDb,
 ) : ViewModel() {
     val isDarkTheme: MutableState<Boolean?> = mutableStateOf(
         when (getAppTheme()) {
@@ -106,6 +109,10 @@ class MainViewModel @Inject constructor(
 
     fun getAppTheme() : AppTheme? {
         return getAppThemeUseCase.execute()
+    }
+
+    fun getMannequinGender() : MannequinGender? {
+        return getMannequinGender.execute()
     }
 
     fun updateAppTheme(appTheme: AppTheme?) {

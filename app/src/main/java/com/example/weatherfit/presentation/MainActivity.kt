@@ -15,29 +15,17 @@ import androidx.activity.viewModels
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -49,6 +37,7 @@ import com.example.weatherfit.presentation.components.CustomNavigationBar
 import com.example.weatherfit.presentation.navigation.NavigationRoutes
 import com.example.weatherfit.presentation.screens.HistoryScreen
 import com.example.weatherfit.presentation.screens.HomeScreen
+import com.example.weatherfit.presentation.screens.ProfileScreen
 import com.example.weatherfit.presentation.screens.RegistrationScreen
 import com.example.weatherfit.presentation.screens.SuggestionScreen
 import com.example.weatherfit.presentation.screens.SurveyScreen
@@ -215,16 +204,24 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(route = NavigationRoutes.Profile.route) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(MaterialTheme.colorScheme.surface),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Bottom,
-                            ) {
-                                Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding() + 20.dp))
-                                Text(text = stringResource(R.string.navigation_title_profile))
-                                Spacer(modifier = Modifier.height(paddingValues.calculateBottomPadding() + 20.dp))
+                            val currentTheme = viewModel.getAppTheme()
+                            val currentMannequinGender = viewModel.getMannequinGender()
+
+                            if (currentTheme != null && currentMannequinGender != null) {
+                                ProfileScreen(
+                                    paddingValues = paddingValues,
+                                    currentTheme = currentTheme,
+                                    currentMannequinGender = currentMannequinGender,
+                                    onThemeChange = {
+                                        Toast.makeText(application, "Смена темы", Toast.LENGTH_LONG).show()
+                                    },
+                                    onMannequinTypeChange = {
+                                        Toast.makeText(application, "Смена манекена", Toast.LENGTH_LONG).show()
+                                    },
+                                    onColdSensitivityReset = {
+                                        Toast.makeText(application, "Сброс коэффициента", Toast.LENGTH_LONG).show()
+                                    }
+                                )
                             }
                         }
                     }

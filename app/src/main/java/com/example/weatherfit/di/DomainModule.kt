@@ -11,6 +11,7 @@ import com.example.weatherfit.domain.usecase.GetAppTheme
 import com.example.weatherfit.domain.usecase.GetColdSensitivity
 import com.example.weatherfit.domain.usecase.GetFitSuggestion
 import com.example.weatherfit.domain.usecase.GetLocationFromIp
+import com.example.weatherfit.domain.usecase.GetMannequinGender
 import com.example.weatherfit.domain.usecase.GetSuggestionsFromDb
 import com.example.weatherfit.domain.usecase.GetWeather
 import com.example.weatherfit.domain.usecase.SaveSettings
@@ -38,6 +39,11 @@ class DomainModule {
     @Provides
     fun provideGetAppThemeUseCase(userSettingsRepository: UserSettingsRepository): GetAppTheme {
         return GetAppTheme(userSettingsRepository)
+    }
+
+    @Provides
+    fun provideGetMannequinGenderUseCase(userSettingsRepository: UserSettingsRepository) : GetMannequinGender {
+        return GetMannequinGender(userSettingsRepository)
     }
 
     @Provides

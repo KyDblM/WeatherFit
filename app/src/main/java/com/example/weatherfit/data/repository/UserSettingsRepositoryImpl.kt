@@ -23,6 +23,18 @@ class UserSettingsRepositoryImpl(val context: Context) : UserSettingsRepository 
         sharedPreferences.edit { putFloat(COLD_SENSITIVITY_KEY, userSettings.coldSensitivityDegree) }
     }
 
+    override fun editTheme(appTheme: AppTheme) {
+        sharedPreferences.edit { putString(THEME_KEY, context.getString(appTheme.label)) }
+    }
+
+    override fun editMannequinGender(mannequinGender: MannequinGender) {
+        sharedPreferences.edit { putString(MANNEQUIN_TYPE_KEY, context.getString(mannequinGender.label)) }
+    }
+
+    override fun editColdSensitivity(coldSensitivity: Float) {
+        sharedPreferences.edit { putFloat(COLD_SENSITIVITY_KEY, coldSensitivity) }
+    }
+
     override fun checkSettingsExist(): Boolean {
         return sharedPreferences.contains(MANNEQUIN_TYPE_KEY)
     }

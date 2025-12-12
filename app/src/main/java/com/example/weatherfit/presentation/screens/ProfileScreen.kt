@@ -17,14 +17,16 @@ import com.example.weatherfit.domain.util.MannequinGender
 import com.example.weatherfit.presentation.components.ConfirmationDialog
 import com.example.weatherfit.presentation.components.SettingButton
 
+private const val BASE_COLD_SENSITIVITY = 0.5f
+
 @Composable
 fun ProfileScreen(
     paddingValues: PaddingValues,
     currentTheme: AppTheme,
     currentMannequinGender: MannequinGender,
-    onThemeChange: () -> Unit,
-    onMannequinTypeChange: () -> Unit,
-    onColdSensitivityReset: () -> Unit
+    onThemeChange: (AppTheme) -> Unit,
+    onMannequinTypeChange: (MannequinGender) -> Unit,
+    onColdSensitivityReset: (Float) -> Unit
 ) {
     val otherTheme = if (currentTheme == AppTheme.LIGHT) AppTheme.DARK else AppTheme.LIGHT
     val otherMannequin = if (currentMannequinGender == MannequinGender.MALE) MannequinGender.FEMALE else MannequinGender.MALE
@@ -37,7 +39,7 @@ fun ProfileScreen(
                     + " \"${stringResource(otherTheme.label)}\"?",
             onDismiss = { isThemeChangeDialogVisible.value = false },
             onConfirm = {
-                onThemeChange()
+                onThemeChange(otherTheme)
                 isThemeChangeDialogVisible.value = false
             }
         )
@@ -51,7 +53,7 @@ fun ProfileScreen(
                     + " \"${stringResource(otherMannequin.label)}\"?",
             onDismiss = { isMannequinChangeDialogVisible.value = false },
             onConfirm = {
-                onMannequinTypeChange()
+                onMannequinTypeChange(otherMannequin)
                 isMannequinChangeDialogVisible.value = false
             }
         )
@@ -64,7 +66,7 @@ fun ProfileScreen(
             confirmationText = stringResource(R.string.reset_cold_sensitivity_confirmation_text),
             onDismiss = { isResetDialogVisible.value = false },
             onConfirm = {
-                onColdSensitivityReset()
+                onColdSensitivityReset(BASE_COLD_SENSITIVITY)
                 isResetDialogVisible.value = false
             }
         )

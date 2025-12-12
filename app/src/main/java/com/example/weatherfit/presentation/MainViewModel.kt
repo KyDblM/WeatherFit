@@ -15,6 +15,7 @@ import com.example.weatherfit.domain.model.FitSuggestion
 import com.example.weatherfit.domain.usecase.CheckSettingsExist
 import com.example.weatherfit.domain.usecase.DeleteSuggestionFromDB
 import com.example.weatherfit.domain.usecase.DeleteSuggestionsFromDB
+import com.example.weatherfit.domain.usecase.EditSetting
 import com.example.weatherfit.domain.usecase.GetAppTheme
 import com.example.weatherfit.domain.usecase.GetColdSensitivity
 import com.example.weatherfit.domain.usecase.GetFitSuggestion
@@ -42,6 +43,7 @@ import java.time.LocalDateTime
 class MainViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val saveSettingsUseCase: SaveSettings,
+    private val editSettingUseCase: EditSetting,
     private val checkSettingsExistUseCase: CheckSettingsExist,
     private val getAppThemeUseCase: GetAppTheme,
     private val getMannequinGender: GetMannequinGender,
@@ -101,6 +103,24 @@ class MainViewModel @Inject constructor(
         val userSettings = mapRegAnswersToUserSettings(settings, context)
 
         saveSettingsUseCase.execute(userSettings)
+    }
+
+    fun editSetting(appTheme: AppTheme) {
+        editSettingUseCase.execute(appTheme)
+
+        isDarkTheme.value = when (getAppTheme()) {
+            AppTheme.DARK -> true
+            AppTheme.LIGHT -> false
+            else -> null
+        }
+    }
+
+    fun editSetting(mannequinGender: MannequinGender) {
+        editSettingUseCase.execute(mannequinGender)
+    }
+
+    fun editSetting(coldSensitivity: Float) {
+        editSettingUseCase.execute(coldSensitivity)
     }
 
     fun checkSettingsExist(): Boolean {

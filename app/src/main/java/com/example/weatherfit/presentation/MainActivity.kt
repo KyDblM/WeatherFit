@@ -212,14 +212,14 @@ class MainActivity : ComponentActivity() {
                                     paddingValues = paddingValues,
                                     currentTheme = currentTheme,
                                     currentMannequinGender = currentMannequinGender,
-                                    onThemeChange = {
-                                        Toast.makeText(application, "Смена темы", Toast.LENGTH_LONG).show()
+                                    onThemeChange = { theme ->
+                                        viewModel.editSetting(theme)
                                     },
-                                    onMannequinTypeChange = {
-                                        Toast.makeText(application, "Смена манекена", Toast.LENGTH_LONG).show()
+                                    onMannequinTypeChange = { mannequinGender ->
+                                        viewModel.editSetting(mannequinGender)
                                     },
-                                    onColdSensitivityReset = {
-                                        Toast.makeText(application, "Сброс коэффициента", Toast.LENGTH_LONG).show()
+                                    onColdSensitivityReset = { coldSensitivity ->
+                                        viewModel.editSetting(coldSensitivity)
                                     }
                                 )
                             }

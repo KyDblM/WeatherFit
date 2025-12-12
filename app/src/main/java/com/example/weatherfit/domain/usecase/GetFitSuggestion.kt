@@ -68,18 +68,21 @@ class GetFitSuggestion {
 
         val accessories = mutableListOf<AccessoriesRepository>()
 
-        if (weather.weatherIcon == R.drawable.weather_sun_icon) {
-            accessories.add(AccessoriesRepository.CAP)
-            accessories.add(AccessoriesRepository.SUNGLASSES)
-        }
+        if (!selectedClothing.baseAccessories.contains(AccessoriesRepository.HEADER)) {
+            if (weather.weatherIcon == R.drawable.weather_sun_icon) {
+                accessories.add(AccessoriesRepository.CAP)
+                accessories.add(AccessoriesRepository.SUNGLASSES)
+            }
 
-        if (weather.uvIndex > 3) {
-            accessories.add(AccessoriesRepository.SUNSCREEN)
-        }
+            if (weather.uvIndex > 3) {
+                accessories.add(AccessoriesRepository.SUNSCREEN)
+            }
 
-        if (weather.forecast.forecastday[0].day.daily_will_it_rain == 1 ||
-            weather.forecast.forecastday[1].day.daily_will_it_rain == 1) {
-            accessories.add(AccessoriesRepository.UMBRELLA)
+            if (weather.forecast.forecastday[0].day.daily_will_it_rain == 1 ||
+                weather.forecast.forecastday[1].day.daily_will_it_rain == 1
+            ) {
+                accessories.add(AccessoriesRepository.UMBRELLA)
+            }
         }
 
         selectedClothing.baseAccessories.addAll(accessories)

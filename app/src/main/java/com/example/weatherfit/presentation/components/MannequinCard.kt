@@ -94,7 +94,7 @@ private fun MannequinCardBase(
         else {
             Image(
                 modifier = Modifier.matchParentSize(),
-                painter = painterResource(R.drawable.dev_naked_mannequin_example),
+                painter = painterResource(R.drawable.mannequin_naked),
                 contentDescription = stringResource(R.string.mannequin_image_description),
                 contentScale = ContentScale.FillHeight
             )

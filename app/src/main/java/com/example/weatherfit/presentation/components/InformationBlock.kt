@@ -54,7 +54,12 @@ fun InformationBlock(
             )
             .clip(shape = RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.surface)
-            .padding(15.dp),
+            .padding(
+                when (informationBlockType) {
+                    is InformationBlockType.OnlyImage -> 0.dp
+                    else -> 15.dp
+                }
+            ),
         contentAlignment = Alignment.Center
     ) {
         when (informationBlockType) {

@@ -7,6 +7,12 @@ import com.example.weatherfit.domain.util.MannequinGender
 interface UserSettingsRepository {
     fun saveSettings(userSettings: UserSettings)
 
+    fun editTheme(appTheme: AppTheme)
+
+    fun editMannequinGender(mannequinGender: MannequinGender)
+
+    fun editColdSensitivity(coldSensitivity: Float)
+
     fun checkSettingsExist() : Boolean
 
     fun getAppTheme() : AppTheme?

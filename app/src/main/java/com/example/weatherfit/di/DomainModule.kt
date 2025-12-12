@@ -7,6 +7,7 @@ import com.example.weatherfit.domain.repository.WeatherDataRepository
 import com.example.weatherfit.domain.usecase.CheckSettingsExist
 import com.example.weatherfit.domain.usecase.DeleteSuggestionFromDB
 import com.example.weatherfit.domain.usecase.DeleteSuggestionsFromDB
+import com.example.weatherfit.domain.usecase.EditSetting
 import com.example.weatherfit.domain.usecase.GetAppTheme
 import com.example.weatherfit.domain.usecase.GetColdSensitivity
 import com.example.weatherfit.domain.usecase.GetFitSuggestion
@@ -29,6 +30,11 @@ class DomainModule {
     @Provides
     fun provideSaveSettingsUseCase(userSettingsRepository: UserSettingsRepository): SaveSettings {
         return SaveSettings(userSettingsRepository)
+    }
+
+    @Provides
+    fun provideEditSettingUseCase(userSettingsRepository: UserSettingsRepository): EditSetting {
+        return EditSetting(userSettingsRepository)
     }
 
     @Provides

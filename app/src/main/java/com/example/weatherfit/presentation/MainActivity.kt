@@ -175,6 +175,10 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onFeedbackClick = { suggestion ->
                                     viewModel.updateSuggestion(suggestion)
+
+                                    if (suggestion.feedback != null) {
+                                        viewModel.saveNewColdSensitivity(suggestion.feedback!!.effectsOnColdSensitivity)
+                                    }
                                 },
                                 onDeleteSuggestionsClick = { suggestions ->
                                     viewModel.deleteSuggestions(suggestions)
@@ -198,6 +202,10 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onFeedbackClick = { suggestion ->
                                         viewModel.updateSuggestion(suggestion)
+
+                                        if (suggestion.feedback != null) {
+                                            viewModel.saveNewColdSensitivity(suggestion.feedback!!.effectsOnColdSensitivity)
+                                        }
                                     }
                                 )
                             }

@@ -123,6 +123,19 @@ class MainViewModel @Inject constructor(
         editSettingUseCase.execute(coldSensitivity)
     }
 
+    fun saveNewColdSensitivity(effect: Float) {
+        var newColdSensitivity = getColdSensitivity.execute() + effect
+
+        if (newColdSensitivity > 1.0f) {
+            newColdSensitivity = 1.0f
+        }
+        else if (newColdSensitivity < 0.1f) {
+            newColdSensitivity = 0.1f
+        }
+
+        editSetting(newColdSensitivity)
+    }
+
     fun checkSettingsExist(): Boolean {
         return checkSettingsExistUseCase.execute()
     }
@@ -133,6 +146,10 @@ class MainViewModel @Inject constructor(
 
     fun getMannequinGender() : MannequinGender? {
         return getMannequinGender.execute()
+    }
+
+    fun getColdSensitivity() : Float {
+        return getColdSensitivity.execute()
     }
 
     fun updateAppTheme(appTheme: AppTheme?) {

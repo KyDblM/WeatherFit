@@ -47,21 +47,12 @@
     <string name="close_button_description">Кнопка выхода</string>
     <string name="weather_icon_description">Иконка погоды</string>
     <string name="arrow_image_description">Стрелка</string>
-    <string name="mannequin_image_description">Манекен</string>
     <string name="navigation_image_description">Иконка навигации</string>
     <string name="information_block_image_description">Иконка блока информации</string>
     <string name="feedback_image_description">Обратная связь</string>
     <string name="delete_image_description">Кнопка удаления</string>
-
-    <string name="first_mannequin_description">Майка, шорты</string>
-    <string name="second_mannequin_description">Футболка, шорты</string>
-    <string name="third_mannequin_description">Футболка, легкие штаны</string>
-    <string name="fourth_mannequin_description">Кофта, легкие штаны</string>
-    <string name="fifth_mannequin_description">Легкая куртка, штаны</string>
-    <string name="sixth_mannequin_description">Куртка, теплые штаны</string>
-    <string name="from_seventh_to_ninth_mannequin_description">Зимняя куртка, теплые штаны</string>
-    <string name="tenth_mannequin_description">Зимняя куртка, утепленные штаны</string>
-    
+    <string name="clothed_mannequin_description">Манекен в одежде</string>
+    <string name="naked_mannequin_description">Манекен без одежды</string>
     <string name="header_description">Шапка</string>
     <string name="glove_description">Перчатки</string>
     <string name="scarf_description">Шарф</string>

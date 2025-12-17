@@ -65,6 +65,15 @@ class MainViewModel @Inject constructor(
         }
     )
 
+    val gender: MutableState<MannequinGender> = mutableStateOf(
+        if (getMannequinGender() == null) {
+            MannequinGender.MALE
+        }
+        else {
+            getMannequinGender()!!
+        }
+    )
+
     val location: MutableState<String> = mutableStateOf("")
     val weather: MutableState<WeatherData?> = mutableStateOf(null)
     var surveyAnswers: Map<QuestionSubject, AnswerOption>? = null
@@ -108,15 +117,13 @@ class MainViewModel @Inject constructor(
     fun editSetting(appTheme: AppTheme) {
         editSettingUseCase.execute(appTheme)
 
-        isDarkTheme.value = when (getAppTheme()) {
-            AppTheme.DARK -> true
-            AppTheme.LIGHT -> false
-            else -> null
-        }
+        updateAppTheme(appTheme)
     }
 
     fun editSetting(mannequinGender: MannequinGender) {
         editSettingUseCase.execute(mannequinGender)
+
+        updateMannequinGender(mannequinGender)
     }
 
     fun editSetting(coldSensitivity: Float) {
@@ -124,7 +131,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun saveNewColdSensitivity(effect: Float) {
-        var newColdSensitivity = getColdSensitivity.execute() + effect
+        var newColdSensitivity = getColdSensitivity() + effect
 
         if (newColdSensitivity > 1.0f) {
             newColdSensitivity = 1.0f
@@ -160,6 +167,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun updateMannequinGender(mannequinGender: MannequinGender?) {
+        if (mannequinGender != null) {
+            gender.value = mannequinGender
+        }
+    }
+
     suspend fun getLocation() {
         val locationFromIp = getLocationFromIpUseCase.execute()
         location.value = locationFromIp.latitude + "," + locationFromIp.longitude
@@ -181,7 +194,7 @@ class MainViewModel @Inject constructor(
                 mannequin = getFitSuggestion.execute(
                     weather = weather.value!!,
                     surveyAnswers = surveyAnswers!!,
-                    userColdSensitivity = getColdSensitivity.execute()
+                    userColdSensitivity = getColdSensitivity()
                 ),
                 weatherIcon = weather.value!!.weatherIcon,
                 temperature = weather.value!!.temperature

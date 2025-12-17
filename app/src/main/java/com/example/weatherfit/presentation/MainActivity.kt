@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -42,6 +43,7 @@ import com.example.weatherfit.presentation.screens.RegistrationScreen
 import com.example.weatherfit.presentation.screens.SuggestionScreen
 import com.example.weatherfit.presentation.screens.SurveyScreen
 import com.example.weatherfit.presentation.theme.WeatherFitTheme
+import com.example.weatherfit.presentation.util.LocalGender
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -95,110 +97,99 @@ class MainActivity : ComponentActivity() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentScreen = navBackStackEntry?.destination?.route ?: viewModel.startScreen
 
-                Scaffold(
-                    bottomBar = {
-                        if (viewModel.navigationItems.any {it.route == currentScreen}) {
-                            CustomNavigationBar(
-                                navController = navController,
-                                navigationItems = viewModel.navigationItems,
-                                currentScreen = currentScreen,
-                                navigationBarPadding = WindowInsets
-                                    .navigationBars
-                                    .only(WindowInsetsSides.Bottom)
-                                    .asPaddingValues()
-                                    .calculateBottomPadding()
-                            )
+                CompositionLocalProvider(LocalGender provides viewModel.gender.value) {
+                    Scaffold(
+                        bottomBar = {
+                            if (viewModel.navigationItems.any { it.route == currentScreen }) {
+                                CustomNavigationBar(
+                                    navController = navController,
+                                    navigationItems = viewModel.navigationItems,
+                                    currentScreen = currentScreen,
+                                    navigationBarPadding = WindowInsets
+                                        .navigationBars
+                                        .only(WindowInsetsSides.Bottom)
+                                        .asPaddingValues()
+                                        .calculateBottomPadding()
+                                )
+                            }
                         }
-                    }
-                ) { paddingValues ->
-                    NavHost(
-                        navController = navController,
-                        startDestination = viewModel.startScreen,
-                        enterTransition = { fadeIn(animationSpec = tween(delayMillis = 1, durationMillis = 1)) },
-                        exitTransition = { fadeOut(animationSpec = tween(durationMillis = 1)) },
-                        popEnterTransition = { fadeIn(animationSpec = tween(delayMillis = 1, durationMillis = 1)) },
-                        popExitTransition = { fadeOut(animationSpec = tween(durationMillis = 1)) }
-                    ) {
-                        composable(route = NavigationRoutes.Registration.route) {
-                            RegistrationScreen(
-                                paddingValues = paddingValues,
-                                questions = QuestionsRepository().registrationQuestions,
-                                onFinished = { answers ->
-                                    viewModel.saveSettings(answers)
-                                    viewModel.updateAppTheme(viewModel.getAppTheme())
-
-                                    navController.navigate(NavigationRoutes.Home.route)
-                                }
-                            )
-                        }
-
-                        composable(route = NavigationRoutes.Home.route) {
-                            HomeScreen(
-                                paddingValues = paddingValues,
-                                weatherData = viewModel.weather,
-                                suggestion = viewModel.suggestion,
-                                onMannequinClick = {
-                                    navController.navigate(NavigationRoutes.Survey.route)
-                                },
-                                onRetryClick = {
-                                    tryToGetLocation()
-                                }
-                            )
-                        }
-
-                        composable(route = NavigationRoutes.Survey.route) {
-                            SurveyScreen(
-                                paddingValues = paddingValues,
-                                questions = QuestionsRepository().surveyQuestions,
-                                onFinished = { answers ->
-                                    viewModel.surveyAnswers = answers
-                                    viewModel.getSuggestion()
-                                    viewModel.saveSuggestionInDatabase()
-
-                                    navController.navigate(NavigationRoutes.Home.route)
-                                },
-                                onClose = {
-                                    navController.navigate(NavigationRoutes.Home.route)
-                                }
-                            )
-                        }
-
-                        composable(route = NavigationRoutes.History.route) {
-                            viewModel.getSuggestionsFromDatabase()
-
-                            HistoryScreen(
-                                paddingValues = paddingValues,
-                                suggestions = viewModel.suggestionsHistory,
-                                onSuggestionClick = { suggestion ->
-                                    viewModel.selectedSuggestion = suggestion
-                                    navController.navigate(NavigationRoutes.Suggestion.route)
-                                },
-                                onFeedbackClick = { suggestion ->
-                                    viewModel.updateSuggestion(suggestion)
-
-                                    if (suggestion.feedback != null) {
-                                        viewModel.saveNewColdSensitivity(suggestion.feedback!!.effectsOnColdSensitivity)
-                                    }
-                                },
-                                onDeleteSuggestionsClick = { suggestions ->
-                                    viewModel.deleteSuggestions(suggestions)
-                                }
-                            )
-                        }
-
-                        composable(route = NavigationRoutes.Suggestion.route) {
-                            if (viewModel.selectedSuggestion != null) {
-                                SuggestionScreen(
+                    ) { paddingValues ->
+                        NavHost(
+                            navController = navController,
+                            startDestination = viewModel.startScreen,
+                            enterTransition = {
+                                fadeIn(
+                                    animationSpec = tween(
+                                        delayMillis = 1,
+                                        durationMillis = 1
+                                    )
+                                )
+                            },
+                            exitTransition = { fadeOut(animationSpec = tween(durationMillis = 1)) },
+                            popEnterTransition = {
+                                fadeIn(
+                                    animationSpec = tween(
+                                        delayMillis = 1,
+                                        durationMillis = 1
+                                    )
+                                )
+                            },
+                            popExitTransition = { fadeOut(animationSpec = tween(durationMillis = 1)) }
+                        ) {
+                            composable(route = NavigationRoutes.Registration.route) {
+                                RegistrationScreen(
                                     paddingValues = paddingValues,
-                                    suggestion = viewModel.selectedSuggestion!!,
-                                    onClose = {
-                                        navController.navigate(NavigationRoutes.History.route)
-                                        viewModel.selectedSuggestion = null
+                                    questions = QuestionsRepository().registrationQuestions,
+                                    onFinished = { answers ->
+                                        viewModel.saveSettings(answers)
+                                        viewModel.updateAppTheme(viewModel.getAppTheme())
+                                        viewModel.updateMannequinGender(viewModel.getMannequinGender())
+
+                                        navController.navigate(NavigationRoutes.Home.route)
+                                    }
+                                )
+                            }
+
+                            composable(route = NavigationRoutes.Home.route) {
+                                HomeScreen(
+                                    paddingValues = paddingValues,
+                                    weatherData = viewModel.weather,
+                                    suggestion = viewModel.suggestion,
+                                    onMannequinClick = {
+                                        navController.navigate(NavigationRoutes.Survey.route)
                                     },
-                                    onDelete = { suggestion ->
-                                        navController.navigate(NavigationRoutes.History.route)
-                                        viewModel.deleteSuggestion(suggestion)
-                                        viewModel.selectedSuggestion = null
+                                    onRetryClick = {
+                                        tryToGetLocation()
+                                    }
+                                )
+                            }
+
+                            composable(route = NavigationRoutes.Survey.route) {
+                                SurveyScreen(
+                                    paddingValues = paddingValues,
+                                    questions = QuestionsRepository().surveyQuestions,
+                                    onFinished = { answers ->
+                                        viewModel.surveyAnswers = answers
+                                        viewModel.getSuggestion()
+                                        viewModel.saveSuggestionInDatabase()
+
+                                        navController.navigate(NavigationRoutes.Home.route)
+                                    },
+                                    onClose = {
+                                        navController.navigate(NavigationRoutes.Home.route)
+                                    }
+                                )
+                            }
+
+                            composable(route = NavigationRoutes.History.route) {
+                                viewModel.getSuggestionsFromDatabase()
+
+                                HistoryScreen(
+                                    paddingValues = paddingValues,
+                                    suggestions = viewModel.suggestionsHistory,
+                                    onSuggestionClick = { suggestion ->
+                                        viewModel.selectedSuggestion = suggestion
+                                        navController.navigate(NavigationRoutes.Suggestion.route)
                                     },
                                     onFeedbackClick = { suggestion ->
                                         viewModel.updateSuggestion(suggestion)
@@ -206,30 +197,58 @@ class MainActivity : ComponentActivity() {
                                         if (suggestion.feedback != null) {
                                             viewModel.saveNewColdSensitivity(suggestion.feedback!!.effectsOnColdSensitivity)
                                         }
+                                    },
+                                    onDeleteSuggestionsClick = { suggestions ->
+                                        viewModel.deleteSuggestions(suggestions)
                                     }
                                 )
                             }
-                        }
 
-                        composable(route = NavigationRoutes.Profile.route) {
-                            val currentTheme = viewModel.getAppTheme()
-                            val currentMannequinGender = viewModel.getMannequinGender()
+                            composable(route = NavigationRoutes.Suggestion.route) {
+                                if (viewModel.selectedSuggestion != null) {
+                                    SuggestionScreen(
+                                        paddingValues = paddingValues,
+                                        suggestion = viewModel.selectedSuggestion!!,
+                                        onClose = {
+                                            navController.navigate(NavigationRoutes.History.route)
+                                            viewModel.selectedSuggestion = null
+                                        },
+                                        onDelete = { suggestion ->
+                                            navController.navigate(NavigationRoutes.History.route)
+                                            viewModel.deleteSuggestion(suggestion)
+                                            viewModel.selectedSuggestion = null
+                                        },
+                                        onFeedbackClick = { suggestion ->
+                                            viewModel.updateSuggestion(suggestion)
 
-                            if (currentTheme != null && currentMannequinGender != null) {
-                                ProfileScreen(
-                                    paddingValues = paddingValues,
-                                    currentTheme = currentTheme,
-                                    currentMannequinGender = currentMannequinGender,
-                                    onThemeChange = { theme ->
-                                        viewModel.editSetting(theme)
-                                    },
-                                    onMannequinTypeChange = { mannequinGender ->
-                                        viewModel.editSetting(mannequinGender)
-                                    },
-                                    onColdSensitivityReset = { coldSensitivity ->
-                                        viewModel.editSetting(coldSensitivity)
-                                    }
-                                )
+                                            if (suggestion.feedback != null) {
+                                                viewModel.saveNewColdSensitivity(suggestion.feedback!!.effectsOnColdSensitivity)
+                                            }
+                                        }
+                                    )
+                                }
+                            }
+
+                            composable(route = NavigationRoutes.Profile.route) {
+                                val currentTheme = viewModel.getAppTheme()
+                                val currentMannequinGender = viewModel.getMannequinGender()
+
+                                if (currentTheme != null && currentMannequinGender != null) {
+                                    ProfileScreen(
+                                        paddingValues = paddingValues,
+                                        currentTheme = currentTheme,
+                                        currentMannequinGender = currentMannequinGender,
+                                        onThemeChange = { theme ->
+                                            viewModel.editSetting(theme)
+                                        },
+                                        onMannequinTypeChange = { mannequinGender ->
+                                            viewModel.editSetting(mannequinGender)
+                                        },
+                                        onColdSensitivityReset = { coldSensitivity ->
+                                            viewModel.editSetting(coldSensitivity)
+                                        }
+                                    )
+                                }
                             }
                         }
                     }

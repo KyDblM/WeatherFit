@@ -23,6 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.weatherfit.R
 import com.example.weatherfit.domain.util.Mannequin
+import com.example.weatherfit.domain.util.MannequinGender
+import com.example.weatherfit.presentation.util.LocalGender
 
 private const val squareRatio = 1f
 private const val rectangularRatio = 0.65f
@@ -86,8 +88,15 @@ private fun MannequinCardBase(
         if (mannequin != null) {
             Image(
                 modifier = Modifier.matchParentSize(),
-                painter = painterResource(mannequin.image),
-                contentDescription = stringResource(R.string.mannequin_image_description),
+                painter = (painterResource(
+                    if (LocalGender.current == MannequinGender.FEMALE) {
+                        mannequin.femaleImage
+                    }
+                    else {
+                        mannequin.maleImage
+                    }
+                )),
+                contentDescription = stringResource(R.string.clothed_mannequin_description),
                 contentScale = ContentScale.FillHeight
             )
         }
@@ -95,7 +104,7 @@ private fun MannequinCardBase(
             Image(
                 modifier = Modifier.matchParentSize(),
                 painter = painterResource(R.drawable.mannequin_naked),
-                contentDescription = stringResource(R.string.mannequin_image_description),
+                contentDescription = stringResource(R.string.naked_mannequin_description),
                 contentScale = ContentScale.FillHeight
             )
         }

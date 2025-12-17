@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Mannequin(
     val warmIndex: Double,
-    @DrawableRes val image: Int,
-    @StringRes val description: Int,
+    @DrawableRes val maleImage: Int,
+    @DrawableRes val femaleImage: Int,
     var baseAccessories: MutableList<AccessoriesRepository> = mutableListOf()
 )

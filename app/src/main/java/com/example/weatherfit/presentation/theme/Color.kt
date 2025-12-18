@@ -10,7 +10,6 @@ val Black900 = Color(0xFF000000)
 
 val Gray900 = Color(0xFF1E1E1E)
 val Gray700 = Color(0xFF2C3135)
-val Gray500 = Color(0xFF3E444A)
 val Gray100 = Color(0xFFABB5BE)
 
 val White50 = Color(0xFFFFFFFF)

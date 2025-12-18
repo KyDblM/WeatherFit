@@ -88,14 +88,14 @@ private fun MannequinCardBase(
         if (mannequin != null) {
             Image(
                 modifier = Modifier.matchParentSize(),
-                painter = (painterResource(
+                painter = painterResource(
                     if (LocalGender.current == MannequinGender.FEMALE) {
                         mannequin.femaleImage
                     }
                     else {
                         mannequin.maleImage
                     }
-                )),
+                ),
                 contentDescription = stringResource(R.string.clothed_mannequin_description),
                 contentScale = ContentScale.FillHeight
             )
@@ -103,7 +103,14 @@ private fun MannequinCardBase(
         else {
             Image(
                 modifier = Modifier.matchParentSize(),
-                painter = painterResource(R.drawable.mannequin_naked),
+                painter = painterResource(
+                    if (LocalGender.current == MannequinGender.FEMALE) {
+                        R.drawable.mannequin_naked_female
+                    }
+                    else {
+                        R.drawable.mannequin_naked_male
+                    }
+                ),
                 contentDescription = stringResource(R.string.naked_mannequin_description),
                 contentScale = ContentScale.FillHeight
             )

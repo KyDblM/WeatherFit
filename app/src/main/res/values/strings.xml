@@ -1,3 +1,64 @@
 <resources>
     <string name="app_name">WeatherFit</string>
+
+    <string name="first_initial_setup_question">Какую тему приложения вы хотите использовать?</string>
+    <string name="first_initial_setup_option_light">Светлая</string>
+    <string name="first_initial_setup_option_dark">Тёмная</string>
+
+    <string name="second_initial_setup_question">Какой пол манекена вы предпочитаете видеть в приложении?</string>
+    <string name="second_initial_setup_option_female">Женский</string>
+    <string name="second_initial_setup_option_male">Мужской</string>
+
+    <string name="hours_outside_question">Сколько часов вы планируете провести вне дома?</string>
+    
+    <string name="location_type_question">Где вы будете проводить время?</string>
+    <string name="location_type_option_indoor">В помещении</string>
+    <string name="location_type_option_outdoor">На улице</string>
+    
+    <string name="activity_mode_question">Какой у вас план активности?</string>
+    <string name="activity_mode_option_regular">Обычная активность</string>
+    <string name="activity_mode_option_sport">Спорт</string>
+
+    <string name="navigation_title_home">Главная</string>
+    <string name="navigation_title_history">История</string>
+    <string name="navigation_title_profile">Профиль</string>
+
+    <string name="wind_title">Ветер</string>
+    <string name="humidity_title">Влажность</string>
+    <string name="rain_title">Осадки</string>
+    <string name="uv_index_title">УФ-индекс</string>
+    <string name="confirmation_title">Подтверждение</string>
+    
+    <string name="confirm_button">Подтвердить</string>
+    <string name="retry_button">Повторить</string>
+    <string name="yes_button">Да</string>
+    <string name="no_button">Нет</string>
+    <string name="change_theme_button">Изменить тему</string>
+    <string name="change_mannequin_button">Изменить манекена</string>
+    <string name="reset_cold_sensitivity_button">Сбросить коэффициент</string>
+
+    <string name="internet_error_text">Требуется подключение к интернету</string>
+    <string name="delete_all_suggestions_confirmation_text">Вы действительно хотите удалить все предложения?</string>
+    <string name="delete_suggestion_confirmation_text">Вы действительно хотите удалить это предложение?</string>
+    <string name="reset_cold_sensitivity_confirmation_text">Вы действительно хотите сбросить индивидуальный коэффициент? После его сброса предложения будут выдаваться менее точно и потребуют калибровки в виде обратной связи.</string>
+    <string name="change_mannequin_confirmation_text">Вы действительно хотите поменять пол манекена на</string>
+    <string name="change_theme_confirmation_text">Вы действительно хотите поменять тему на</string>
+
+    <string name="close_button_description">Кнопка выхода</string>
+    <string name="weather_icon_description">Иконка погоды</string>
+    <string name="arrow_image_description">Стрелка</string>
+    <string name="navigation_image_description">Иконка навигации</string>
+    <string name="information_block_image_description">Иконка блока информации</string>
+    <string name="feedback_image_description">Обратная связь</string>
+    <string name="delete_image_description">Кнопка удаления</string>
+    <string name="clothed_mannequin_description">Манекен в одежде</string>
+    <string name="naked_mannequin_description">Манекен без одежды</string>
+    <string name="header_description">Шапка</string>
+    <string name="glove_description">Перчатки</string>
+    <string name="scarf_description">Шарф</string>
+    <string name="thermal_underwear_description">Термобелье</string>
+    <string name="umbrella_description">Зонт</string>
+    <string name="sunglasses_description">Солнцезащитные очки</string>
+    <string name="cap_description">Кепка</string>
+    <string name="sunscreen_description">Солнцезащитный крем</string>
 </resources>

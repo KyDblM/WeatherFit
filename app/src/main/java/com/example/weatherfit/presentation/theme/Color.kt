@@ -2,10 +2,16 @@ package com.example.weatherfit.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val Blue500 = Color(0xFF367ABD)
+val Blue200 = Color(0xFF81ACD7)
+val Blue50 = Color(0xFFEEF2F8)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val Black900 = Color(0xFF000000)
+
+val Gray900 = Color(0xFF1E1E1E)
+val Gray700 = Color(0xFF2C3135)
+val Gray100 = Color(0xFFABB5BE)
+
+val White50 = Color(0xFFFFFFFF)
+
+val Green500 = Color(0xFF33AB53)

@@ -35,7 +35,7 @@ android {
             )
         }
 
-        getByName("debug") {
+        getByName("release") {
             buildConfigField("String", "IP_API_KEY", ipKey)
             buildConfigField("String", "WEATHER_API_KEY", weatherKey)
         }

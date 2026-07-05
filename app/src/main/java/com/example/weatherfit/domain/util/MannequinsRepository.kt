@@ -27,7 +27,7 @@ class MannequinsRepository {
         Mannequin(
             warmIndex = 0.8,
             maleImage = R.drawable.mannequin_fifth_male,
-            femaleImage = R.drawable.mannequin_first_female
+            femaleImage = R.drawable.mannequin_fifth_female
         ),
         Mannequin(
             warmIndex = 1.1,
